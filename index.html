@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Efraín Rojas — Portfolio</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --c1: #FF6B35;
+    --c2: #7C3AED;
+    --c3: #10B981;
+    --c4: #F59E0B;
+    --c5: #3B82F6;
+    --dark: #0D0D0D;
+    --card: #141414;
+    --border: rgba(255,255,255,0.08);
+    --text: #F0EEE8;
+    --muted: #888;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background: var(--dark);
+    color: var(--text);
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 32px;
+    background: rgba(13,13,13,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-logo { font-family:'Syne',sans-serif; font-size:20px; font-weight:800; letter-spacing:-0.5px; }
+  .nav-logo span { color: var(--c1); }
+  .nav-links { display:flex; gap:24px; }
+  .nav-links a { color: var(--muted); text-decoration:none; font-size:14px; transition:color .2s; }
+  .nav-links a:hover { color: var(--text); }
+  .lang-toggle {
+    display:flex; gap:4px;
+    background: rgba(255,255,255,0.06);
+    border-radius:20px; padding:3px;
+  }
+  .lang-btn {
+    border:none; background:transparent; color:var(--muted);
+    font-size:13px; font-family:'Space Grotesk',sans-serif;
+    padding:4px 12px; border-radius:16px; cursor:pointer; transition:all .2s;
+  }
+  .lang-btn.active { background: var(--c1); color: #fff; }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex; align-items: center;
+    padding: 120px 32px 80px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-bg {
+    position:absolute; inset:0; pointer-events:none;
+    background:
+      radial-gradient(ellipse 60% 50% at 80% 30%, rgba(124,58,237,0.12) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 40% at 20% 70%, rgba(255,107,53,0.08) 0%, transparent 55%);
+  }
+  .hero-grid {
+    position:absolute; inset:0;
+    background-image: linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+                      linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+    background-size: 48px 48px;
+  }
+  .hero-content { position:relative; max-width:680px; }
+  .hero-tag {
+    display:inline-flex; align-items:center; gap:8px;
+    background: rgba(255,107,53,0.12);
+    border: 1px solid rgba(255,107,53,0.25);
+    border-radius:20px; padding:6px 14px;
+    font-size:13px; color: var(--c1);
+    margin-bottom:24px;
+  }
+  .hero-tag .dot { width:6px; height:6px; border-radius:50%; background:var(--c1); animation:pulse 2s ease-in-out infinite; }
+  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(1.4)} }
+  h1 {
+    font-family:'Syne',sans-serif; font-weight:800;
+    font-size: clamp(42px,7vw,72px); line-height:1.05; letter-spacing:-2px;
+    margin-bottom:20px;
+  }
+  h1 .line2 { color:var(--c1); }
+  .hero-sub { font-size:17px; color:var(--muted); max-width:520px; margin-bottom:36px; }
+  .hero-actions { display:flex; gap:12px; flex-wrap:wrap; }
+  .btn-primary {
+    background: var(--c1); color:#fff; border:none;
+    padding:12px 28px; border-radius:8px; font-size:15px;
+    font-family:'Space Grotesk',sans-serif; font-weight:500;
+    cursor:pointer; transition:all .2s; text-decoration:none; display:inline-block;
+  }
+  .btn-primary:hover { background:#ff4d1a; transform:translateY(-2px); }
+  .btn-outline {
+    background:transparent; color:var(--text);
+    border: 1px solid var(--border); padding:12px 28px;
+    border-radius:8px; font-size:15px; font-family:'Space Grotesk',sans-serif;
+    cursor:pointer; transition:all .2s; text-decoration:none; display:inline-block;
+  }
+  .btn-outline:hover { border-color: rgba(255,255,255,0.25); }
+  .hero-stats {
+    display:flex; gap:32px; margin-top:56px;
+    padding-top:32px; border-top:1px solid var(--border);
+  }
+  .stat-n { font-family:'Syne',sans-serif; font-size:28px; font-weight:800; }
+  .stat-l { font-size:13px; color:var(--muted); }
+
+  /* SECTIONS */
+  section { padding: 80px 32px; max-width: 900px; margin: 0 auto; }
+  .section-label {
+    font-size:12px; font-weight:600; letter-spacing:3px; text-transform:uppercase;
+    color:var(--c1); margin-bottom:12px;
+  }
+  .section-title {
+    font-family:'Syne',sans-serif; font-size:clamp(28px,4vw,40px);
+    font-weight:800; letter-spacing:-1px; margin-bottom:40px;
+  }
+
+  /* SKILLS */
+  .skills-grid { display:flex; flex-direction:column; gap:20px; }
+  .skill-group-name { font-size:13px; font-weight:500; color:var(--muted); margin-bottom:10px; letter-spacing:.5px; }
+  .skill-tags { display:flex; flex-wrap:wrap; gap:8px; }
+  .tag { padding:6px 14px; border-radius:6px; font-size:13px; font-weight:500; transition:transform .15s; cursor:default; }
+  .tag:hover { transform:translateY(-2px); }
+  .tag-orange { background:rgba(255,107,53,0.12); color:#ff8c5a; border:1px solid rgba(255,107,53,0.2); }
+  .tag-purple { background:rgba(124,58,237,0.12); color:#a78bfa; border:1px solid rgba(124,58,237,0.2); }
+  .tag-green  { background:rgba(16,185,129,0.12); color:#34d399; border:1px solid rgba(16,185,129,0.2); }
+  .tag-blue   { background:rgba(59,130,246,0.12); color:#60a5fa; border:1px solid rgba(59,130,246,0.2); }
+  .tag-amber  { background:rgba(245,158,11,0.12); color:#fbbf24; border:1px solid rgba(245,158,11,0.2); }
+
+  /* EXPERIENCE */
+  .exp-list { display:flex; flex-direction:column; gap:12px; }
+  .exp-card {
+    background:var(--card); border:1px solid var(--border);
+    border-radius:12px; padding:24px 28px;
+    display:flex; gap:20px; align-items:flex-start;
+    transition:border-color .2s;
+  }
+  .exp-card:hover { border-color:rgba(255,255,255,0.15); }
+  .exp-icon {
+    width:44px; height:44px; border-radius:10px;
+    display:flex; align-items:center; justify-content:center;
+    font-size:20px; flex-shrink:0; margin-top:2px;
+  }
+  .exp-role { font-weight:600; font-size:16px; margin-bottom:2px; }
+  .exp-company { font-size:14px; color:var(--c1); margin-bottom:4px; }
+  .exp-period { font-size:12px; color:var(--muted); margin-bottom:12px; }
+  .exp-bullets { list-style:none; display:flex; flex-direction:column; gap:5px; }
+  .exp-bullets li { font-size:14px; color:var(--muted); padding-left:16px; position:relative; }
+  .exp-bullets li::before { content:'→'; position:absolute; left:0; color:var(--c1); font-size:12px; top:1px; }
+
+  /* PROJECTS */
+  .projects-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(260px,1fr)); gap:16px; }
+  .proj-card {
+    background:var(--card); border:1px solid var(--border);
+    border-radius:14px; padding:24px; cursor:default;
+    transition:all .2s; position:relative; overflow:hidden;
+  }
+  .proj-card::before {
+    content:''; position:absolute; top:0; left:0; right:0; height:2px; opacity:0; transition:opacity .2s;
+  }
+  .proj-card:hover { border-color:rgba(255,255,255,0.15); transform:translateY(-3px); }
+  .proj-card:hover::before { opacity:1; }
+  .proj-card.orange::before { background:var(--c1); }
+  .proj-card.purple::before { background:var(--c2); }
+  .proj-card.green::before  { background:var(--c3); }
+  .proj-card.blue::before   { background:var(--c5); }
+  .proj-card.amber::before  { background:var(--c4); }
+  .proj-emoji { font-size:28px; margin-bottom:14px; }
+  .proj-name { font-weight:600; font-size:16px; margin-bottom:8px; }
+  .proj-desc { font-size:14px; color:var(--muted); margin-bottom:16px; line-height:1.5; }
+  .proj-stack { display:flex; flex-wrap:wrap; gap:6px; }
+  .proj-tag { font-size:11px; font-weight:600; padding:3px 9px; border-radius:5px; letter-spacing:.3px; }
+
+  /* LANGUAGES */
+  .lang-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:12px; }
+  .lang-card {
+    background:var(--card); border:1px solid var(--border);
+    border-radius:10px; padding:16px 20px; text-align:center;
+  }
+  .lang-flag { font-size:24px; margin-bottom:8px; }
+  .lang-name { font-weight:600; font-size:15px; margin-bottom:4px; }
+  .lang-level { font-size:12px; color:var(--muted); }
+
+  /* CONTACT */
+  .contact-links { display:flex; flex-wrap:wrap; gap:12px; }
+  .contact-pill {
+    display:flex; align-items:center; gap:10px;
+    background:var(--card); border:1px solid var(--border);
+    border-radius:10px; padding:12px 20px; text-decoration:none;
+    color:var(--text); font-size:14px; transition:all .2s;
+  }
+  .contact-pill:hover { border-color:rgba(255,255,255,0.2); transform:translateY(-2px); }
+  .contact-pill-icon { font-size:18px; }
+
+  /* FOOTER */
+  footer { text-align:center; padding:32px; font-size:13px; color:var(--muted); border-top:1px solid var(--border); }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width:5px; }
+  ::-webkit-scrollbar-track { background:transparent; }
+  ::-webkit-scrollbar-thumb { background:rgba(255,255,255,0.1); border-radius:3px; }
+
+  /* RESPONSIVE */
+  @media (max-width: 600px) {
+    nav { padding: 12px 16px; }
+    .nav-links { display: none; }
+    section { padding: 60px 16px; }
+    .hero { padding: 100px 16px 60px; }
+    .hero-stats { gap: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">efra<span>.</span>dev</div>
+  <div class="nav-links">
+    <a href="#about" onclick="smoothScroll(event,this)">About</a>
+    <a href="#skills" onclick="smoothScroll(event,this)">Skills</a>
+    <a href="#projects" onclick="smoothScroll(event,this)">Projects</a>
+    <a href="#experience" onclick="smoothScroll(event,this)">Experience</a>
+    <a href="#contact" onclick="smoothScroll(event,this)">Contact</a>
+  </div>
+  <div class="lang-toggle">
+    <button class="lang-btn" id="btn-es" onclick="setLang('es')">ES</button>
+    <button class="lang-btn active" id="btn-en" onclick="setLang('en')">EN</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero" id="about">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-content">
+    <div class="hero-tag">
+      <span class="dot"></span>
+      <span data-en="Open to opportunities" data-es="Disponible para oportunidades">Open to opportunities</span>
+    </div>
+    <h1>
+      Efraín Rojas<br>
+      <span class="line2" data-en="builds things." data-es="construye cosas.">builds things.</span>
+    </h1>
+    <p class="hero-sub" data-en="Software Engineering student · NOC Technician · Automation & Web Dev enthusiast based in Atenas, Costa Rica." data-es="Estudiante de Ingeniería en Software · Técnico NOC · Entusiasta de Automatización y Desarrollo Web en Atenas, Costa Rica.">Software Engineering student · NOC Technician · Automation & Web Dev enthusiast based in Atenas, Costa Rica.</p>
+    <div class="hero-actions">
+      <a class="btn-primary" href="#projects" onclick="smoothScroll(event,this)" data-en="View projects ↓" data-es="Ver proyectos ↓">View projects ↓</a>
+      <a class="btn-outline" href="#contact" onclick="smoothScroll(event,this)" data-en="Get in touch" data-es="Contáctame">Get in touch</a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat"><div class="stat-n">5+</div><div class="stat-l" data-en="prog. languages" data-es="lenguajes">prog. languages</div></div>
+      <div class="stat"><div class="stat-n">4</div><div class="stat-l" data-en="spoken langs" data-es="idiomas hablados">spoken langs</div></div>
+      <div class="stat"><div class="stat-n">2</div><div class="stat-l" data-en="years exp." data-es="años exp.">years exp.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="section-label" data-en="What I work with" data-es="Con qué trabajo">What I work with</div>
+  <div class="section-title" data-en="Technical Skills" data-es="Habilidades Técnicas">Technical Skills</div>
+  <div class="skills-grid">
+    <div class="skill-group">
+      <div class="skill-group-name" data-en="Programming Languages" data-es="Lenguajes de Programación">Programming Languages</div>
+      <div class="skill-tags">
+        <span class="tag tag-orange">Python</span>
+        <span class="tag tag-orange">JavaScript</span>
+        <span class="tag tag-orange">C#</span>
+        <span class="tag tag-orange">Java</span>
+        <span class="tag tag-orange">C / C++</span>
+      </div>
+    </div>
+    <div class="skill-group">
+      <div class="skill-group-name" data-en="Web & Frameworks" data-es="Web y Frameworks">Web & Frameworks</div>
+      <div class="skill-tags">
+        <span class="tag tag-purple">React</span>
+        <span class="tag tag-purple">Next.js</span>
+        <span class="tag tag-purple">HTML</span>
+        <span class="tag tag-purple">CSS</span>
+      </div>
+    </div>
+    <div class="skill-group">
+      <div class="skill-group-name" data-en="Automation & Data" data-es="Automatización y Datos">Automation & Data</div>
+      <div class="skill-tags">
+        <span class="tag tag-green">UiPath RPA</span>
+        <span class="tag tag-green">SQL</span>
+        <span class="tag tag-green">Power BI</span>
+      </div>
+    </div>
+    <div class="skill-group">
+      <div class="skill-group-name" data-en="Network & Monitoring" data-es="Redes y Monitoreo">Network & Monitoring</div>
+      <div class="skill-tags">
+        <span class="tag tag-blue">Zabbix</span>
+        <span class="tag tag-blue">TCP/IP</span>
+        <span class="tag tag-blue">WinBox</span>
+        <span class="tag tag-blue">Unifi</span>
+        <span class="tag tag-blue">OLT</span>
+        <span class="tag tag-blue">GNS3</span>
+      </div>
+    </div>
+    <div class="skill-group">
+      <div class="skill-group-name" data-en="Operating Systems" data-es="Sistemas Operativos">Operating Systems</div>
+      <div class="skill-tags">
+        <span class="tag tag-amber">Linux</span>
+        <span class="tag tag-amber">Windows</span>
+        <span class="tag tag-amber">macOS</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="section-label" data-en="Built from scratch" data-es="Construidos desde cero">Built from scratch</div>
+  <div class="section-title" data-en="Projects" data-es="Proyectos">Projects</div>
+  <div class="projects-grid">
+
+    <div class="proj-card orange">
+      <div class="proj-emoji">🤖</div>
+      <div class="proj-name" data-en="Invoice Automation Bot" data-es="Bot de Automatización de Facturas">Invoice Automation Bot</div>
+      <div class="proj-desc" data-en="RPA bot built with UiPath that extracts invoice data from PDFs, validates it and uploads it to a management system, reducing manual processing by ~80%." data-es="Bot RPA con UiPath que extrae datos de facturas en PDF, los valida y los sube a un sistema de gestión, reduciendo el procesamiento manual en ~80%.">RPA bot built with UiPath that extracts invoice data from PDFs, validates it and uploads it to a management system, reducing manual processing by ~80%.</div>
+      <div class="proj-stack">
+        <span class="proj-tag" style="background:rgba(255,107,53,0.15);color:#ff8c5a;">UiPath</span>
+        <span class="proj-tag" style="background:rgba(255,107,53,0.15);color:#ff8c5a;">RPA</span>
+        <span class="proj-tag" style="background:rgba(255,107,53,0.15);color:#ff8c5a;">PDF Processing</span>
+      </div>
+    </div>
+
+    <div class="proj-card purple">
+      <div class="proj-emoji">📊</div>
+      <div class="proj-name" data-en="Network Dashboard" data-es="Dashboard de Red">Network Dashboard</div>
+      <div class="proj-desc" data-en="Python + SQL dashboard that collects Zabbix alerts, classifies incidents by severity and generates daily reports automatically." data-es="Dashboard en Python + SQL que recolecta alertas de Zabbix, clasifica incidentes por severidad y genera reportes diarios automáticamente.">Python + SQL dashboard that collects Zabbix alerts, classifies incidents by severity and generates daily reports automatically.</div>
+      <div class="proj-stack">
+        <span class="proj-tag" style="background:rgba(124,58,237,0.15);color:#a78bfa;">Python</span>
+        <span class="proj-tag" style="background:rgba(124,58,237,0.15);color:#a78bfa;">SQL</span>
+        <span class="proj-tag" style="background:rgba(124,58,237,0.15);color:#a78bfa;">Zabbix API</span>
+      </div>
+    </div>
+
+    <div class="proj-card green">
+      <div class="proj-emoji">🌐</div>
+      <div class="proj-name" data-en="IT Service Portal" data-es="Portal de Servicios IT">IT Service Portal</div>
+      <div class="proj-desc" data-en="Full-stack web app built with Next.js and SQL to manage internal IT tickets, with role-based access and status tracking." data-es="App web full-stack con Next.js y SQL para gestionar tickets de IT internos, con acceso por roles y seguimiento de estado.">Full-stack web app built with Next.js and SQL to manage internal IT tickets, with role-based access and status tracking.</div>
+      <div class="proj-stack">
+        <span class="proj-tag" style="background:rgba(16,185,129,0.15);color:#34d399;">Next.js</span>
+        <span class="proj-tag" style="background:rgba(16,185,129,0.15);color:#34d399;">React</span>
+        <span class="proj-tag" style="background:rgba(16,185,129,0.15);color:#34d399;">SQL</span>
+      </div>
+    </div>
+
+    <div class="proj-card blue">
+      <div class="proj-emoji">🔍</div>
+      <div class="proj-name" data-en="Log Analyzer Script" data-es="Script Analizador de Logs">Log Analyzer Script</div>
+      <div class="proj-desc" data-en="Python CLI tool that parses network device logs, detects anomalies and sends alerts via email when thresholds are exceeded." data-es="Herramienta CLI en Python que parsea logs de dispositivos de red, detecta anomalías y envía alertas por email al superar umbrales.">Python CLI tool that parses network device logs, detects anomalies and sends alerts via email when thresholds are exceeded.</div>
+      <div class="proj-stack">
+        <span class="proj-tag" style="background:rgba(59,130,246,0.15);color:#60a5fa;">Python</span>
+        <span class="proj-tag" style="background:rgba(59,130,246,0.15);color:#60a5fa;">Networking</span>
+        <span class="proj-tag" style="background:rgba(59,130,246,0.15);color:#60a5fa;">Automation</span>
+      </div>
+    </div>
+
+    <div class="proj-card amber">
+      <div class="proj-emoji">🗄️</div>
+      <div class="proj-name" data-en="Inventory DB System" data-es="Sistema de BD de Inventario">Inventory DB System</div>
+      <div class="proj-desc" data-en="Relational database system for warehouse management with stored procedures, triggers and a React web interface." data-es="Sistema de base de datos relacional para gestión de almacén con procedimientos almacenados, triggers e interfaz web en React.">Relational database system for warehouse management with stored procedures, triggers and a React web interface.</div>
+      <div class="proj-stack">
+        <span class="proj-tag" style="background:rgba(245,158,11,0.15);color:#fbbf24;">SQL</span>
+        <span class="proj-tag" style="background:rgba(245,158,11,0.15);color:#fbbf24;">React</span>
+        <span class="proj-tag" style="background:rgba(245,158,11,0.15);color:#fbbf24;">DB Design</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- EXPERIENCE -->
+<section id="experience">
+  <div class="section-label" data-en="Where I've worked" data-es="Dónde he trabajado">Where I've worked</div>
+  <div class="section-title" data-en="Experience" data-es="Experiencia">Experience</div>
+  <div class="exp-list">
+
+    <div class="exp-card">
+      <div class="exp-icon" style="background:rgba(59,130,246,0.1);">🌐</div>
+      <div class="exp-body">
+        <div class="exp-role" data-en="NOC Technician" data-es="Técnico NOC">NOC Technician</div>
+        <div class="exp-company">Vocex</div>
+        <div class="exp-period">Oct 2025 – Jan 2026 · San José, CR</div>
+        <ul class="exp-bullets">
+          <li data-en="Network infrastructure monitoring with Zabbix, OLT and routers" data-es="Monitoreo de infraestructura de red con Zabbix, OLT y routers">Network infrastructure monitoring with Zabbix, OLT and routers</li>
+          <li data-en="Incident detection, analysis and escalation to L2/L3 support" data-es="Detección, análisis y escalamiento de incidentes a soporte L2/L3">Incident detection, analysis and escalation to L2/L3 support</li>
+          <li data-en="Ticket management and performance report generation" data-es="Gestión de tickets y generación de reportes de rendimiento">Ticket management and performance report generation</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="exp-card">
+      <div class="exp-icon" style="background:rgba(16,185,129,0.1);">🏭</div>
+      <div class="exp-body">
+        <div class="exp-role" data-en="Production Operator I" data-es="Operador de Producción I">Production Operator I</div>
+        <div class="exp-company">Confluent Medical</div>
+        <div class="exp-period">Jan 2025 – Sep 2025 · Alajuela, CR</div>
+        <ul class="exp-bullets">
+          <li data-en="Operated equipment in cleanroom under ISO standards" data-es="Operar equipos en sala limpia bajo estándares ISO">Operated equipment in cleanroom under ISO standards</li>
+          <li data-en="Maintained detailed reports on production deviations" data-es="Mantenimiento de reportes detallados de desviaciones de producción">Maintained detailed reports on production deviations</li>
+          <li data-en="Collaborated in continuous improvement projects" data-es="Colaboración en proyectos de mejora continua">Collaborated in continuous improvement projects</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- LANGUAGES -->
+<section>
+  <div class="section-label" data-en="Communication" data-es="Comunicación">Communication</div>
+  <div class="section-title" data-en="Languages" data-es="Idiomas">Languages</div>
+  <div class="lang-grid">
+    <div class="lang-card"><div class="lang-flag">🇨🇷</div><div class="lang-name" data-en="Spanish" data-es="Español">Spanish</div><div class="lang-level" data-en="Native" data-es="Nativo">Native</div></div>
+    <div class="lang-card"><div class="lang-flag">🇺🇸</div><div class="lang-name" data-en="English" data-es="Inglés">English</div><div class="lang-level">B2 — Upper-Intermediate</div></div>
+    <div class="lang-card"><div class="lang-flag">🇧🇷</div><div class="lang-name" data-en="Portuguese" data-es="Portugués">Portuguese</div><div class="lang-level" data-en="Basic" data-es="Básico">Basic</div></div>
+    <div class="lang-card"><div class="lang-flag">🇯🇵</div><div class="lang-name" data-en="Japanese" data-es="Japonés">Japanese</div><div class="lang-level" data-en="Basic" data-es="Básico">Basic</div></div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="section-label" data-en="Let's talk" data-es="Hablemos">Let's talk</div>
+  <div class="section-title" data-en="Get in touch" data-es="Contáctame">Get in touch</div>
+  <div class="contact-links">
+    <a class="contact-pill" href="mailto:efrabuild@outlook.com">
+      <span class="contact-pill-icon">✉️</span> efrabuild@outlook.com
+    </a>
+    <a class="contact-pill" href="tel:+50688902804">
+      <span class="contact-pill-icon">📱</span> +506 8890-2804
+    </a>
+    <a class="contact-pill" href="https://github.com/efrabuilder" target="_blank">
+      <span class="contact-pill-icon">🐙</span> github.com/efrabuilder
+    </a>
+  </div>
+</section>
+
+<footer>
+  <span data-en="Built with ♥ in Costa Rica · 2026" data-es="Hecho con ♥ en Costa Rica · 2026">Built with ♥ in Costa Rica · 2026</span>
+</footer>
+
+<script>
+  function smoothScroll(e, el) {
+    e.preventDefault();
+    const target = document.querySelector(el.getAttribute('href'));
+    if (target) target.scrollIntoView({ behavior: 'smooth' });
+  }
+
+  function setLang(lang) {
+    document.querySelectorAll('[data-en]').forEach(el => {
+      el.textContent = el.dataset[lang];
+    });
+    document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+    document.getElementById('btn-es').classList.toggle('active', lang === 'es');
+  }
+</script>
+</body>
+</html>
