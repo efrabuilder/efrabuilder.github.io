@@ -159,7 +159,7 @@
   .exp-bullets li { font-size:14px; color:var(--muted); padding-left:16px; position:relative; }
   .exp-bullets li::before { content:'→'; position:absolute; left:0; color:var(--c1); font-size:12px; top:1px; }
 
-  /* PROJECTS */
+/* PROJECTS */
   .projects-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(260px,1fr)); gap:16px; }
   .proj-card {
     background:var(--card); border:1px solid var(--border);
@@ -176,12 +176,15 @@
   .proj-card.green::before  { background:var(--c3); }
   .proj-card.blue::before   { background:var(--c5); }
   .proj-card.amber::before  { background:var(--c4); }
+  .proj-card.cyan::before   { background:#06b6d4; }
+  .proj-card.yellow::before { background:#f59e0b; }
+  .proj-card.emerald::before{ background:#10b981; }
   .proj-emoji { font-size:28px; margin-bottom:14px; }
   .proj-name { font-weight:600; font-size:16px; margin-bottom:8px; }
   .proj-desc { font-size:14px; color:var(--muted); margin-bottom:16px; line-height:1.5; }
   .proj-stack { display:flex; flex-wrap:wrap; gap:6px; }
   .proj-tag { font-size:11px; font-weight:600; padding:3px 9px; border-radius:5px; letter-spacing:.3px; }
-
+  
   /* LANGUAGES */
   .lang-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:12px; }
   .lang-card {
@@ -385,6 +388,48 @@
         <span class="proj-tag" style="background:rgba(245,158,11,0.15);color:#fbbf24;">SQL</span>
         <span class="proj-tag" style="background:rgba(245,158,11,0.15);color:#fbbf24;">React</span>
         <span class="proj-tag" style="background:rgba(245,158,11,0.15);color:#fbbf24;">DB Design</span>
+      </div>
+    </div>
+</a>
+
+    <a href="https://github.com/efrabuilder/csharp-dungeon" target="_blank" style="text-decoration:none;color:inherit;display:block;">
+    <div class="proj-card" style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:24px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden;">
+      <div class="proj-card" style="position:absolute;top:0;left:0;right:0;height:2px;background:#06b6d4;"></div>
+      <div class="proj-emoji">🗡️</div>
+      <div class="proj-name" data-en="Dungeon Explorer" data-es="Explorador de Mazmorras">Dungeon Explorer</div>
+      <div class="proj-desc" data-en="Text-based dungeon crawler built in C# with turn-based combat, inventory, level system and multiple enemy types." data-es="Juego de mazmorras en C# con combate por turnos, inventario, sistema de niveles y múltiples tipos de enemigos.">Text-based dungeon crawler built in C# with turn-based combat, inventory, level system and multiple enemy types.</div>
+      <div class="proj-stack">
+        <span class="proj-tag" style="background:rgba(6,182,212,0.15);color:#22d3ee;">C#</span>
+        <span class="proj-tag" style="background:rgba(6,182,212,0.15);color:#22d3ee;">.NET</span>
+        <span class="proj-tag" style="background:rgba(6,182,212,0.15);color:#22d3ee;">OOP</span>
+      </div>
+    </div>
+</a>
+
+<a href="https://github.com/efrabuilder/java-banking" target="_blank" style="text-decoration:none;color:inherit;display:block;">
+    <div class="proj-card" style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:24px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden;">
+      <div style="position:absolute;top:0;left:0;right:0;height:2px;background:#f59e0b;"></div>
+      <div class="proj-emoji">🏦</div>
+      <div class="proj-name" data-en="Banking System" data-es="Sistema Bancario">Banking System</div>
+      <div class="proj-desc" data-en="Console banking system in Java with account management, deposits, withdrawals, transfers and full transaction history." data-es="Sistema bancario en Java con gestión de cuentas, depósitos, retiros, transferencias e historial de transacciones.">Console banking system in Java with account management, deposits, withdrawals, transfers and full transaction history.</div>
+      <div class="proj-stack">
+        <span class="proj-tag" style="background:rgba(245,158,11,0.15);color:#fbbf24;">Java</span>
+        <span class="proj-tag" style="background:rgba(245,158,11,0.15);color:#fbbf24;">OOP</span>
+        <span class="proj-tag" style="background:rgba(245,158,11,0.15);color:#fbbf24;">Collections</span>
+      </div>
+    </div>
+</a>
+
+<a href="https://github.com/efrabuilder/c-sysmon" target="_blank" style="text-decoration:none;color:inherit;display:block;">
+    <div class="proj-card" style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:24px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden;">
+      <div style="position:absolute;top:0;left:0;right:0;height:2px;background:#10b981;"></div>
+      <div class="proj-emoji">⚡</div>
+      <div class="proj-name" data-en="System Monitor" data-es="Monitor de Sistema">System Monitor</div>
+      <div class="proj-desc" data-en="Lightweight real-time system monitor in C showing CPU, memory and disk usage with color-coded bars and threshold alerts." data-es="Monitor de sistema en tiempo real en C con uso de CPU, memoria y disco con barras de color y alertas por umbrales.">Lightweight real-time system monitor in C showing CPU, memory and disk usage with color-coded bars and threshold alerts.</div>
+      <div class="proj-stack">
+        <span class="proj-tag" style="background:rgba(16,185,129,0.15);color:#34d399;">C</span>
+        <span class="proj-tag" style="background:rgba(16,185,129,0.15);color:#34d399;">Linux/Windows</span>
+        <span class="proj-tag" style="background:rgba(16,185,129,0.15);color:#34d399;">Systems</span>
       </div>
     </div>
 </a>
