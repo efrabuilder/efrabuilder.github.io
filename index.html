@@ -124,10 +124,23 @@
   ::-webkit-scrollbar-track { background:transparent; }
   ::-webkit-scrollbar-thumb { background:rgba(255,255,255,0.1); border-radius:3px; }
   @media (max-width:600px) { nav { padding:12px 16px; } .nav-links { display:none; } section { padding:60px 16px; } .hero { padding:100px 16px 60px; } .hero-stats { gap:20px; } }
+  .theme-toggle-btn{position:fixed;top:16px;right:16px;z-index:9999;width:44px;height:44px;border-radius:50%;border:1px solid rgba(128,128,128,.35);background:rgba(128,128,128,.12);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform .15s ease;}
+.theme-toggle-btn:hover{transform:scale(1.08);}
+.theme-toggle-btn svg{width:20px;height:20px;}
+.theme-toggle-btn .icon-moon{display:none;}
+html.theme-inverted .theme-toggle-btn .icon-sun{display:none;}
+html.theme-inverted .theme-toggle-btn .icon-moon{display:block;}
+html.theme-inverted{filter:invert(1) hue-rotate(180deg);}
+html.theme-inverted img,html.theme-inverted video,html.theme-inverted iframe,html.theme-inverted svg image,html.theme-inverted .theme-toggle-btn{filter:invert(1) hue-rotate(180deg);}
 </style>
 </head>
 <body>
- 
+
+<button class="theme-toggle-btn" id="theme-toggle" title="Cambiar tema" aria-label="Cambiar tema claro/oscuro">
+  <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+  <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+</button>
+  
 <nav>
   <div class="nav-logo">efra<span>.</span>build</div>
   <div class="nav-links">
@@ -700,5 +713,15 @@
     document.getElementById('cv-btn-en').style.display = lang === 'en' ? 'inline-block' : 'none';
     document.getElementById('cv-btn-es').style.display = lang === 'es' ? 'inline-block' : 'none';
   }
+  (function(){
+  var root = document.documentElement;
+  var btn = document.getElementById('theme-toggle');
+  var saved = localStorage.getItem('theme-inverted');
+  if (saved === 'true') root.classList.add('theme-inverted');
+  btn.addEventListener('click', function(){
+    root.classList.toggle('theme-inverted');
+    localStorage.setItem('theme-inverted', root.classList.contains('theme-inverted'));
+  });
+})();
 </script></body>
 </html>
