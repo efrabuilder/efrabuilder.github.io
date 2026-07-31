@@ -4,6 +4,24 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Efraín Sebastian Rojas Artavia — Portfolio</title>
+<meta name="description" content="Efraín Sebastian Rojas Artavia — Software Engineering student building networking, automation, web development and cybersecurity projects.">
+
+<!-- Favicon: monograma "e." en SVG, no requiere archivo aparte -->
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230D0D0D'/%3E%3Ctext x='32' y='44' font-family='Arial, sans-serif' font-weight='800' font-size='34' text-anchor='middle' fill='%23F0EEE8'%3Ee%3Ctspan fill='%23FF6B35'%3E.%3C/tspan%3E%3C/text%3E%3C/svg%3E">
+
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="Efraín Sebastian Rojas Artavia — Portfolio">
+<meta property="og:description" content="Software Engineering student building networking, automation, web development and cybersecurity projects.">
+<meta property="og:url" content="https://efrabuilder.github.io/">
+<meta property="og:image" content="https://raw.githubusercontent.com/efrabuilder/efrabuilder.github.io/main/og-image.png">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Efraín Sebastian Rojas Artavia — Portfolio">
+<meta name="twitter:description" content="Software Engineering student building networking, automation, web development and cybersecurity projects.">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/efrabuilder/efrabuilder.github.io/main/og-image.png">
+
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -24,8 +42,17 @@
   .nav-logo { font-family:'Syne',sans-serif; font-size:20px; font-weight:800; letter-spacing:-0.5px; }
   .nav-logo span { color:var(--c1); }
   .nav-links { display:flex; gap:24px; }
-  .nav-links a { color:var(--muted); text-decoration:none; font-size:14px; transition:color .2s; }
+  .nav-links a { color:var(--muted); text-decoration:none; font-size:14px; transition:color .2s; position:relative; }
   .nav-links a:hover { color:var(--text); }
+  .nav-links a.active { color:var(--c1); }
+  .nav-links a.active::after { content:''; position:absolute; left:0; right:0; bottom:-6px; height:2px; background:var(--c1); border-radius:2px; }
+  .nav-burger { display:none; width:36px; height:36px; border-radius:8px; border:1px solid var(--border); background:rgba(255,255,255,0.06); cursor:pointer; align-items:center; justify-content:center; flex-shrink:0; }
+  .nav-burger span, .nav-burger span::before, .nav-burger span::after { content:''; display:block; width:18px; height:2px; background:var(--text); border-radius:2px; position:relative; transition:transform .2s ease, opacity .2s ease; }
+  .nav-burger span::before { position:absolute; top:-6px; }
+  .nav-burger span::after { position:absolute; top:6px; }
+  nav.nav-open .nav-burger span { background:transparent; }
+  nav.nav-open .nav-burger span::before { transform:translateY(6px) rotate(45deg); }
+  nav.nav-open .nav-burger span::after { transform:translateY(-6px) rotate(-45deg); }
   .lang-toggle { display:flex; gap:4px; background:rgba(255,255,255,0.06); border-radius:20px; padding:3px; }
   .lang-btn { border:none; background:transparent; color:var(--muted); font-size:13px; font-family:'Space Grotesk',sans-serif; padding:4px 12px; border-radius:16px; cursor:pointer; transition:all .2s; }
   .lang-btn.active { background:var(--c1); color:#fff; }
@@ -123,7 +150,50 @@
   ::-webkit-scrollbar { width:5px; }
   ::-webkit-scrollbar-track { background:transparent; }
   ::-webkit-scrollbar-thumb { background:rgba(255,255,255,0.1); border-radius:3px; }
-  @media (max-width:600px) { nav { padding:12px 16px; } .nav-links { display:none; } section { padding:60px 16px; } .hero { padding:100px 16px 60px; } .hero-stats { gap:20px; } }
+
+  /* Barra de progreso de scroll */
+  .scroll-progress { position:fixed; top:0; left:0; height:2px; width:100%; background:var(--c1); transform:scaleX(0); transform-origin:left; z-index:101; will-change:transform; }
+
+  /* Foco visible para navegación por teclado */
+  a:focus-visible, button:focus-visible {
+    outline:2px solid var(--c1); outline-offset:3px; border-radius:4px;
+  }
+  .lang-btn:focus-visible { outline-offset:1px; }
+
+  /* Indicador "abrir" en las tarjetas de proyecto */
+  .proj-card { position:relative; }
+  .proj-open-hint {
+    position:absolute; top:16px; right:16px; width:26px; height:26px; border-radius:50%;
+    background:rgba(255,255,255,0.06); border:1px solid var(--border);
+    display:flex; align-items:center; justify-content:center;
+    font-size:13px; color:var(--muted); opacity:0; transform:translate(-4px,4px);
+    transition:opacity .2s ease, transform .2s ease;
+  }
+  .proj-card:hover .proj-open-hint { opacity:1; transform:translate(0,0); color:var(--c1); border-color:rgba(255,107,53,0.35); }
+
+  /* Animación de entrada al hacer scroll */
+  .reveal { opacity:0; transform:translateY(24px); transition:opacity .6s ease, transform .6s ease; will-change:transform,opacity; }
+  .reveal.is-visible { opacity:1; transform:translateY(0); }
+  @media (prefers-reduced-motion: reduce) {
+    .reveal { opacity:1; transform:none; transition:none; }
+  }
+
+  @media (max-width:600px) {
+    nav { padding:12px 16px; flex-wrap:wrap; }
+    .nav-burger { display:flex; }
+    .nav-links {
+      display:flex; flex-direction:column; gap:0; width:100%;
+      max-height:0; overflow:hidden; opacity:0;
+      transition:max-height .3s ease, opacity .25s ease;
+      order:3;
+    }
+    nav.nav-open .nav-links { max-height:320px; opacity:1; margin-top:14px; }
+    .nav-links a { padding:12px 4px; border-top:1px solid var(--border); font-size:15px; }
+    .nav-links a.active::after { display:none; }
+    section { padding:60px 16px; }
+    .hero { padding:100px 16px 60px; }
+    .hero-stats { gap:20px; }
+  }
  .theme-toggle-btn{width:36px;height:36px;border-radius:50%;border:1px solid rgba(128,128,128,.35);background:rgba(128,128,128,.12);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform .15s ease;flex-shrink:0;}
 .theme-toggle-btn:hover{transform:scale(1.08);}
 .theme-toggle-btn svg{width:20px;height:20px;}
@@ -182,15 +252,19 @@ html.theme-inverted img,html.theme-inverted video,html.theme-inverted iframe,htm
   </div>
  <div style="display:flex;align-items:center;gap:10px;">
     <div class="lang-toggle">
-      <button class="lang-btn" id="btn-es" onclick="setLang('es')">ES</button>
-      <button class="lang-btn active" id="btn-en" onclick="setLang('en')">EN</button>
+      <button class="lang-btn" id="btn-es" onclick="setLang('es')" aria-label="Cambiar idioma a Español" aria-pressed="false">ES</button>
+      <button class="lang-btn active" id="btn-en" onclick="setLang('en')" aria-label="Switch language to English" aria-pressed="true">EN</button>
     </div>
     <button class="theme-toggle-btn" id="theme-toggle" title="Cambiar tema" aria-label="Cambiar tema claro/oscuro">
       <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
       <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
     </button>
+    <button class="nav-burger" id="nav-burger" aria-label="Abrir menú de navegación" aria-expanded="false" aria-controls="nav-links-list">
+      <span></span>
+    </button>
   </div>
 </nav>
+<div class="scroll-progress" id="scroll-progress" aria-hidden="true"></div>
 
 <div class="hero" id="about">
   <div class="hero-bg"></div>
@@ -216,7 +290,7 @@ html.theme-inverted img,html.theme-inverted video,html.theme-inverted iframe,htm
   </div>
 </div>
 
-<section id="skills">
+<section id="skills" class="reveal">
   <div class="section-label" data-en="What I work with" data-es="Con qué trabajo">What I work with</div>
   <div class="section-title" data-en="Technical Skills" data-es="Habilidades Técnicas">Technical Skills</div>
   <div class="skills-grid">
@@ -339,13 +413,14 @@ html.theme-inverted img,html.theme-inverted video,html.theme-inverted iframe,htm
       <rect x="0" y="0" width="100%" height="100%" fill="url(#fxP4)"/>
     </svg>
   </div>
-  <section id="projects">
+  <section id="projects" class="reveal">
   <div class="section-label" data-en="Built from scratch" data-es="Construidos desde cero">Built from scratch</div>
   <div class="section-title" data-en="Projects" data-es="Proyectos">Projects</div>
   <div class="projects-grid">
 
     <a href="https://efrabuilder.github.io/invoice-bot/" target="_blank" class="proj-link">
       <div class="proj-card orange">
+        <span class="proj-open-hint" aria-hidden="true">↗</span>
         <div class="proj-emoji">🤖</div>
         <div class="proj-name" data-en="Invoice Automation Bot" data-es="Bot de Automatización de Facturas">Invoice Automation Bot</div>
         <div class="proj-desc" data-en="Python bot that extracts invoice data from PDFs, validates it and uploads it to a management system, reducing manual processing by ~80%." data-es="Bot en Python que extrae datos de facturas en PDF, los valida y los sube a un sistema de gestión, reduciendo el procesamiento manual en ~80%.">Python bot that extracts invoice data from PDFs, validates it and uploads it to a management system, reducing manual processing by ~80%.</div>
@@ -359,6 +434,7 @@ html.theme-inverted img,html.theme-inverted video,html.theme-inverted iframe,htm
 
     <a href="https://efrabuilder.github.io/report-automator/" target="_blank" class="proj-link">
       <div class="proj-card purple">
+        <span class="proj-open-hint" aria-hidden="true">↗</span>
         <div class="proj-emoji">📊</div>
         <div class="proj-name" data-en="Network Dashboard" data-es="Dashboard de Red">Network Dashboard</div>
         <div class="proj-desc" data-en="Python + SQL dashboard that collects Zabbix alerts, classifies incidents by severity and generates daily reports automatically." data-es="Dashboard en Python + SQL que recolecta alertas de Zabbix, clasifica incidentes por severidad y genera reportes diarios automáticamente.">Python + SQL dashboard that collects Zabbix alerts, classifies incidents by severity and generates daily reports automatically.</div>
@@ -372,6 +448,7 @@ html.theme-inverted img,html.theme-inverted video,html.theme-inverted iframe,htm
 
     <a href="https://it-service-portal-ver2.vercel.app/" target="_blank" class="proj-link">
       <div class="proj-card green">
+        <span class="proj-open-hint" aria-hidden="true">↗</span>
         <div class="proj-emoji">🌐</div>
         <div class="proj-name" data-en="IT Service Portal" data-es="Portal de Servicios IT">IT Service Portal</div>
         <div class="proj-desc" data-en="Full-stack web app built with Next.js and SQL to manage internal IT tickets, with role-based access and status tracking." data-es="App web full-stack con Next.js y SQL para gestionar tickets de IT internos, con acceso por roles y seguimiento de estado.">Full-stack web app built with Next.js and SQL to manage internal IT tickets, with role-based access and status tracking.</div>
@@ -385,6 +462,7 @@ html.theme-inverted img,html.theme-inverted video,html.theme-inverted iframe,htm
 
     <a href="https://efrabuilder.github.io/log-analyzer/" target="_blank" class="proj-link">
       <div class="proj-card blue">
+        <span class="proj-open-hint" aria-hidden="true">↗</span>
         <div class="proj-emoji">🔍</div>
         <div class="proj-name" data-en="Log Analyzer Script" data-es="Script Analizador de Logs">Log Analyzer Script</div>
         <div class="proj-desc" data-en="Python CLI tool that parses network device logs, detects anomalies and sends alerts via email when thresholds are exceeded." data-es="Herramienta CLI en Python que parsea logs de dispositivos de red, detecta anomalías y envía alertas por email al superar umbrales.">Python CLI tool that parses network device logs, detects anomalies and sends alerts via email when thresholds are exceeded.</div>
@@ -398,6 +476,7 @@ html.theme-inverted img,html.theme-inverted video,html.theme-inverted iframe,htm
 
     <a href="https://inventory-db-sigma.vercel.app/" target="_blank" class="proj-link">
       <div class="proj-card amber">
+        <span class="proj-open-hint" aria-hidden="true">↗</span>
         <div class="proj-emoji">🗄️</div>
         <div class="proj-name" data-en="Inventory DB System" data-es="Sistema de BD de Inventario">Inventory DB System</div>
         <div class="proj-desc" data-en="Relational database system for warehouse management with stored procedures, triggers and a React web interface." data-es="Sistema de base de datos relacional para gestión de almacén con procedimientos almacenados, triggers e interfaz web en React.">Relational database system for warehouse management with stored procedures, triggers and a React web interface.</div>
@@ -411,6 +490,7 @@ html.theme-inverted img,html.theme-inverted video,html.theme-inverted iframe,htm
 
     <a href="https://efrabuilder.github.io/csharp-dungeon/" target="_blank" class="proj-link">
       <div class="proj-card cyan">
+        <span class="proj-open-hint" aria-hidden="true">↗</span>
         <div class="proj-emoji">🗡️</div>
         <div class="proj-name" data-en="Dungeon Explorer" data-es="Explorador de Mazmorras">Dungeon Explorer</div>
         <div class="proj-desc" data-en="Text-based dungeon crawler in C# with turn-based combat, inventory, level system and multiple enemy types." data-es="Juego de mazmorras en C# con combate por turnos, inventario, sistema de niveles y múltiples tipos de enemigos.">Text-based dungeon crawler in C# with turn-based combat, inventory, level system and multiple enemy types.</div>
@@ -424,6 +504,7 @@ html.theme-inverted img,html.theme-inverted video,html.theme-inverted iframe,htm
 
     <a href="https://efrabuilder.github.io/java-banking/" target="_blank" class="proj-link">
       <div class="proj-card yellow">
+        <span class="proj-open-hint" aria-hidden="true">↗</span>
         <div class="proj-emoji">🏦</div>
         <div class="proj-name" data-en="Banking System" data-es="Sistema Bancario">Banking System</div>
         <div class="proj-desc" data-en="Console banking system in Java with account management, deposits, withdrawals, transfers and full transaction history." data-es="Sistema bancario en Java con gestión de cuentas, depósitos, retiros, transferencias e historial de transacciones.">Console banking system in Java with account management, deposits, withdrawals, transfers and full transaction history.</div>
@@ -437,6 +518,7 @@ html.theme-inverted img,html.theme-inverted video,html.theme-inverted iframe,htm
 
     <a href="https://efrabuilder.github.io/c-sysmon/" target="_blank" class="proj-link">
       <div class="proj-card emerald">
+        <span class="proj-open-hint" aria-hidden="true">↗</span>
         <div class="proj-emoji">⚡</div>
         <div class="proj-name" data-en="System Monitor" data-es="Monitor de Sistema">System Monitor</div>
         <div class="proj-desc" data-en="Lightweight real-time system monitor in C showing CPU, memory and disk usage with color-coded bars and threshold alerts." data-es="Monitor de sistema en tiempo real en C con uso de CPU, memoria y disco con barras de color y alertas por umbrales.">Lightweight real-time system monitor in C showing CPU, memory and disk usage with color-coded bars and threshold alerts.</div>
@@ -450,6 +532,7 @@ html.theme-inverted img,html.theme-inverted video,html.theme-inverted iframe,htm
 
     <a href="https://efrabuilder.github.io/Fundamentos-de-Ciencias-de-Datos/" target="_blank" class="proj-link">
       <div class="proj-card purple">
+        <span class="proj-open-hint" aria-hidden="true">↗</span>
         <div class="proj-emoji">📈</div>
         <div class="proj-name" data-en="Data Science Fundamentals" data-es="Fundamentos de Ciencia de Datos">Data Science Fundamentals</div>
         <div class="proj-desc" data-en="Repository with all the modules of the Data Science Fundamentals course." data-es="Repositorio con todos los módulos del curso Fundamentos de Ciencias de Datos.">Repository with all the modules of the Data Science Fundamentals course.</div>
@@ -463,6 +546,7 @@ html.theme-inverted img,html.theme-inverted video,html.theme-inverted iframe,htm
 
     <a href="https://efrabuilder.github.io/apa7-url-ref/" target="_blank" class="proj-link">
       <div class="proj-card cyan">
+        <span class="proj-open-hint" aria-hidden="true">↗</span>
         <div class="proj-emoji">📚</div>
         <div class="proj-name" data-en="APA7 Reference Generator" data-es="Generador de Referencias APA 7">APA7 Reference Generator</div>
         <div class="proj-desc" data-en="Generates APA 7 references from URLs and PDFs, reading page and document metadata directly in the browser. Also ships as a Python package with a CLI." data-es="Genera referencias APA 7 a partir de URLs y PDFs, leyendo los metadatos de la página o del documento directamente en el navegador. También incluye un paquete Python con CLI.">Generates APA 7 references from URLs and PDFs, reading page and document metadata directly in the browser. Also ships as a Python package with a CLI.</div>
@@ -476,6 +560,7 @@ html.theme-inverted img,html.theme-inverted video,html.theme-inverted iframe,htm
 
     <a href="https://efrabuilder.github.io/Pdfsum/" target="_blank" class="proj-link">
       <div class="proj-card green">
+        <span class="proj-open-hint" aria-hidden="true">↗</span>
         <div class="proj-emoji">📄</div>
         <div class="proj-name" data-en="PDF Summarizer" data-es="Resumidor de PDF">PDF Summarizer</div>
         <div class="proj-desc" data-en="Extractive summarizer that scores sentences by word frequency to pull out a PDF's most relevant lines, entirely in the browser with pdf.js — the file never leaves the device. Also available as a Python package with a CLI." data-es="Resumidor extractivo que puntúa oraciones por frecuencia de palabras para extraer las más relevantes de un PDF, todo en el navegador con pdf.js — el archivo nunca sale del dispositivo. También disponible como paquete Python con CLI.">Extractive summarizer that scores sentences by word frequency to pull out a PDF's most relevant lines, entirely in the browser with pdf.js — the file never leaves the device. Also available as a Python package with a CLI.</div>
@@ -490,7 +575,7 @@ html.theme-inverted img,html.theme-inverted video,html.theme-inverted iframe,htm
   </div>
 </section>
 
-<section id="experience">
+<section id="experience" class="reveal">
   <div class="section-label" data-en="Where I've worked" data-es="Dónde he trabajado">Where I've worked</div>
   <div class="section-title" data-en="Experience" data-es="Experiencia">Experience</div>
   <div class="exp-list">
@@ -523,7 +608,7 @@ html.theme-inverted img,html.theme-inverted video,html.theme-inverted iframe,htm
   </div>
 </section>
 
-<section>
+<section class="reveal">
   <div class="section-label" data-en="Communication" data-es="Comunicación">Communication</div>
   <div class="section-title" data-en="Languages" data-es="Idiomas">Languages</div>
   <div class="lang-grid">
@@ -535,7 +620,7 @@ html.theme-inverted img,html.theme-inverted video,html.theme-inverted iframe,htm
 </section>
 
 <!-- EDUCATION & CERTIFICATIONS -->
-<section id="education">
+<section id="education" class="reveal">
   <div class="section-label" data-en="Background" data-es="Formación">Background</div>
   <div class="section-title" data-en="Education & Certifications" data-es="Educación y Certificaciones">Education & Certifications</div>
   <div class="contact-links" style="margin-bottom:24px;">
@@ -784,7 +869,7 @@ html.theme-inverted img,html.theme-inverted video,html.theme-inverted iframe,htm
   </div>
 </section>
 
-<section id="contact">
+<section id="contact" class="reveal">
   <div class="section-label" data-en="Let's talk" data-es="Hablemos">Let's talk</div>
   <div class="section-title" data-en="Get in touch" data-es="Contáctame">Get in touch</div>
   <div class="contact-links">
@@ -807,6 +892,7 @@ html.theme-inverted img,html.theme-inverted video,html.theme-inverted iframe,htm
     e.preventDefault();
     const target = document.querySelector(el.getAttribute('href'));
     if (target) target.scrollIntoView({ behavior: 'smooth' });
+    closeMobileNav();
   }
 
   function setLang(lang) {
@@ -815,18 +901,88 @@ html.theme-inverted img,html.theme-inverted video,html.theme-inverted iframe,htm
     });
     document.getElementById('btn-en').classList.toggle('active', lang === 'en');
     document.getElementById('btn-es').classList.toggle('active', lang === 'es');
+    document.getElementById('btn-en').setAttribute('aria-pressed', lang === 'en');
+    document.getElementById('btn-es').setAttribute('aria-pressed', lang === 'es');
     document.getElementById('cv-btn-en').style.display = lang === 'en' ? 'inline-block' : 'none';
     document.getElementById('cv-btn-es').style.display = lang === 'es' ? 'inline-block' : 'none';
   }
+
   (function(){
-  var root = document.documentElement;
-  var btn = document.getElementById('theme-toggle');
-  var saved = localStorage.getItem('theme-inverted');
-  if (saved === 'true') root.classList.add('theme-inverted');
-  btn.addEventListener('click', function(){
-    root.classList.toggle('theme-inverted');
-    localStorage.setItem('theme-inverted', root.classList.contains('theme-inverted'));
+    var root = document.documentElement;
+    var btn = document.getElementById('theme-toggle');
+    var saved = localStorage.getItem('theme-inverted');
+    if (saved === 'true') root.classList.add('theme-inverted');
+    btn.addEventListener('click', function(){
+      root.classList.toggle('theme-inverted');
+      localStorage.setItem('theme-inverted', root.classList.contains('theme-inverted'));
+    });
+  })();
+
+  // Menú móvil
+  var navEl = document.querySelector('nav');
+  var burgerBtn = document.getElementById('nav-burger');
+  function closeMobileNav() {
+    navEl.classList.remove('nav-open');
+    burgerBtn.setAttribute('aria-expanded', 'false');
+  }
+  burgerBtn.addEventListener('click', function(){
+    var isOpen = navEl.classList.toggle('nav-open');
+    burgerBtn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
   });
-})();
+
+  // Resaltar el link activo del nav según la sección visible
+  (function(){
+    var navLinks = Array.from(document.querySelectorAll('.nav-links a'));
+    var sections = navLinks
+      .map(function(a){ return document.querySelector(a.getAttribute('href')); })
+      .filter(Boolean);
+    if (!sections.length) return;
+    var byId = {};
+    navLinks.forEach(function(a){ byId[a.getAttribute('href')] = a; });
+
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if (entry.isIntersecting) {
+          navLinks.forEach(function(a){ a.classList.remove('active'); });
+          var link = byId['#' + entry.target.id];
+          if (link) link.classList.add('active');
+        }
+      });
+    }, { rootMargin: '-45% 0px -50% 0px', threshold: 0 });
+
+    sections.forEach(function(s){ observer.observe(s); });
+  })();
+
+  // Animación de entrada al hacer scroll (fade + slide)
+  (function(){
+    var revealEls = document.querySelectorAll('.reveal');
+    if (!revealEls.length) return;
+    var revealObserver = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12 });
+    revealEls.forEach(function(el){ revealObserver.observe(el); });
+  })();
+
+  // Barra de progreso de scroll (transform, sin repintar layout)
+  (function(){
+    var bar = document.getElementById('scroll-progress');
+    var ticking = false;
+    function updateBar() {
+      var scrollTop = window.scrollY || document.documentElement.scrollTop;
+      var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      var ratio = docHeight > 0 ? Math.min(scrollTop / docHeight, 1) : 0;
+      bar.style.transform = 'scaleX(' + ratio + ')';
+      ticking = false;
+    }
+    window.addEventListener('scroll', function(){
+      if (!ticking) { requestAnimationFrame(updateBar); ticking = true; }
+    }, { passive: true });
+    updateBar();
+  })();
 </script></body>
 </html>
