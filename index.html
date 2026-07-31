@@ -133,13 +133,14 @@ html.theme-inverted .theme-toggle-btn .icon-moon{display:block;}
 html.theme-inverted{filter:invert(1) hue-rotate(180deg);}
 html.theme-inverted img,html.theme-inverted video,html.theme-inverted iframe,html.theme-inverted svg image,html.theme-inverted .theme-toggle-btn{filter:invert(1) hue-rotate(180deg);}
 
-  /* ===== FONDO DE LINEAS FLUORESCENTES (empieza despues del hero, se repite en patron) ===== */
+  /* ===== FONDO DE LINEAS FLUORESCENTES (movimiento via patternTransform, animateTransform nativo de SVG) ===== */
   .bg-fx {
     position: absolute;
     inset: 0;
     z-index: -1;
     pointer-events: none;
     overflow: hidden;
+    contain: paint;
   }
   .content-fx-wrap {
     position: relative;
@@ -149,24 +150,22 @@ html.theme-inverted img,html.theme-inverted video,html.theme-inverted iframe,htm
     height: 100%;
     display: block;
     mix-blend-mode: screen;
+    shape-rendering: geometricPrecision;
   }
   .bg-fx .fx-line {
     fill: none;
-    stroke-width: 2;
-    opacity: .45;
-    filter: drop-shadow(0 0 2px currentColor) drop-shadow(0 0 6px currentColor);
+    stroke-width: 3.5;
+    stroke-linecap: round;
+    vector-effect: non-scaling-stroke;
+    opacity: .55;
   }
-  .fx-1 { stroke:#00F0FF; stroke-dasharray:420 2100; animation:flow1 12s linear infinite; }
-  .fx-2 { stroke:#FF2FE0; stroke-dasharray:380 2000; animation:flow2 15s linear infinite; }
-  .fx-3 { stroke:#B6FF00; stroke-dasharray:450 2200; animation:flow3 18s linear infinite; }
-  .fx-4 { stroke:#FF6A00; stroke-dasharray:400 2050; animation:flow4 14s linear infinite reverse; }
-
-  @keyframes flow1 { to { stroke-dashoffset:-2520; } }
-  @keyframes flow2 { to { stroke-dashoffset:-2380; } }
-  @keyframes flow3 { to { stroke-dashoffset:-2650; } }
-  @keyframes flow4 { to { stroke-dashoffset:-2450; } }
+  .fx-1 { stroke:#00F0FF; }
+  .fx-2 { stroke:#FF2FE0; }
+  .fx-3 { stroke:#B6FF00; opacity:.4; }
+  .fx-4 { stroke:#FF6A00; }
 
   @media (max-width:600px){ .bg-fx{ display:none; } }
+  @media (prefers-reduced-motion: reduce){ .bg-fx animateTransform{ display:none; } }
 </style>
 </head>
 <body>
@@ -317,14 +316,27 @@ html.theme-inverted img,html.theme-inverted video,html.theme-inverted iframe,htm
   <div class="bg-fx" aria-hidden="true">
     <svg width="100%" height="100%" preserveAspectRatio="none">
       <defs>
-        <pattern id="fxPattern" patternUnits="userSpaceOnUse" width="1920" height="900">
-          <path class="fx-line fx-1" d="M -50 120 C 350 -40 650 260 980 100 C 1300 -60 1600 200 1970 90"/>
-          <path class="fx-line fx-2" d="M -50 420 C 300 560 600 300 950 460 C 1300 620 1650 340 1970 500"/>
-          <path class="fx-line fx-3" d="M -50 700 C 300 560 600 800 900 640 C 1200 480 1500 700 1970 830"/>
-          <path class="fx-line fx-4" d="M 1970 830 C 1650 700 1300 850 950 720 C 700 630 400 780 -50 650"/>
+        <pattern id="fxP1" patternUnits="userSpaceOnUse" width="1920" height="900">
+          <path class="fx-line fx-1" d="M 0,140 C 240,30 720,30 960,140 C 1200,250 1680,250 1920,140"/>
+          <animateTransform attributeName="patternTransform" type="translate" from="0 0" to="-1920 0" dur="16s" repeatCount="indefinite"/>
+        </pattern>
+        <pattern id="fxP2" patternUnits="userSpaceOnUse" width="1920" height="900">
+          <path class="fx-line fx-2" d="M 0,380 C 240,240 720,240 960,380 C 1200,520 1680,520 1920,380"/>
+          <animateTransform attributeName="patternTransform" type="translate" from="-1920 0" to="0 0" dur="20s" repeatCount="indefinite"/>
+        </pattern>
+        <pattern id="fxP3" patternUnits="userSpaceOnUse" width="1920" height="900">
+          <path class="fx-line fx-3" d="M 0,580 C 240,460 720,460 960,580 C 1200,700 1680,700 1920,580"/>
+          <animateTransform attributeName="patternTransform" type="translate" from="0 0" to="-1920 0" dur="26s" repeatCount="indefinite"/>
+        </pattern>
+        <pattern id="fxP4" patternUnits="userSpaceOnUse" width="1920" height="900">
+          <path class="fx-line fx-4" d="M 0,820 C 240,750 720,750 960,820 C 1200,890 1680,890 1920,820"/>
+          <animateTransform attributeName="patternTransform" type="translate" from="-1920 0" to="0 0" dur="18s" repeatCount="indefinite"/>
         </pattern>
       </defs>
-      <rect x="0" y="0" width="100%" height="100%" fill="url(#fxPattern)"/>
+      <rect x="0" y="0" width="100%" height="100%" fill="url(#fxP1)"/>
+      <rect x="0" y="0" width="100%" height="100%" fill="url(#fxP2)"/>
+      <rect x="0" y="0" width="100%" height="100%" fill="url(#fxP3)"/>
+      <rect x="0" y="0" width="100%" height="100%" fill="url(#fxP4)"/>
     </svg>
   </div>
   <section id="projects">
@@ -816,7 +828,5 @@ html.theme-inverted img,html.theme-inverted video,html.theme-inverted iframe,htm
     localStorage.setItem('theme-inverted', root.classList.contains('theme-inverted'));
   });
 })();
-</script></body>
-</html>
 </script></body>
 </html>
