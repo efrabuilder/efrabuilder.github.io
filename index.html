@@ -199,18 +199,21 @@
   }
   .btn-primary:hover { background:var(--accent-hover); transform:translateY(-2px); box-shadow:0 8px 30px var(--accent-glow); }
   .btn-outline {
-    background:transparent; color:var(--text); border:1px solid var(--border); padding:12px 28px;
+    background:transparent; color:var(--accent); border:1px solid var(--accent-border); padding:12px 28px;
     border-radius:8px; font-size:15px; font-family:'Space Grotesk',sans-serif; cursor:pointer;
     transition:all .2s; text-decoration:none; display:inline-block;
     position:relative; overflow:hidden;
   }
-  .btn-outline:hover { border-color:rgba(var(--text-rgb),0.25); }
+  .btn-outline:hover {
+    border-color:var(--accent); background:var(--accent-soft);
+    transform:translateY(-2px); box-shadow:0 8px 30px var(--accent-glow);
+  }
   .btn-primary::before, .btn-outline::before {
     content:''; position:absolute; top:0; left:-60%; width:35%; height:100%;
     background:linear-gradient(115deg, transparent, rgba(255,255,255,0.35), transparent);
     transform:skewX(-20deg); pointer-events:none; transition:left .65s ease;
   }
-  .btn-outline::before { background:linear-gradient(115deg, transparent, rgba(var(--text-rgb),0.18), transparent); }
+  .btn-outline::before { background:linear-gradient(115deg, transparent, rgba(255,255,255,0.4), transparent); }
   .btn-primary:hover::before, .btn-outline:hover::before { left:130%; }
   @media (prefers-reduced-motion: reduce) {
     .btn-primary::before, .btn-outline::before { display:none; }
@@ -235,7 +238,7 @@
     border-radius:20px; cursor:pointer; transition:all .25s ease;
   }
   .skills-tab:hover { color:var(--text); border-color:rgba(var(--text-rgb),0.2); }
-  .skills-tab.active { color:var(--bg-1); background:var(--accent); border-color:var(--accent); box-shadow:0 4px 20px var(--accent-glow); }
+  .skills-tab.active { color:var(--bg-1); background:var(--tab-color, var(--accent)); border-color:var(--tab-color, var(--accent)); box-shadow:0 4px 20px var(--tab-glow, var(--accent-glow)); }
 
   /* ===== Profundidad: cristal + halo de hover =====
      skills-stage, exp-card, edu-card, cert-card, lang-card y contact-pill
@@ -249,8 +252,8 @@
   .skills-stage::after, .exp-card::after, .edu-card::after, .cert-card::after,
   .lang-card::after, .contact-pill::after {
     content:''; position:absolute; inset:0; border-radius:inherit; pointer-events:none;
-    background:radial-gradient(circle 220px at var(--mx,50%) var(--my,50%), var(--accent-soft) 0%, transparent 72%);
-    opacity:0; transition:opacity .35s ease; z-index:0;
+    background:radial-gradient(circle 220px at var(--mx,50%) var(--my,50%), var(--glow-color, var(--accent-soft)) 0%, transparent 72%);
+    opacity:0; transition:opacity .35s ease, background .3s ease; z-index:0;
   }
   .skills-stage:hover::after, .exp-card:hover::after, .edu-card:hover::after,
   .cert-card:hover::after, .lang-card:hover::after, .contact-pill:hover::after { opacity:1; }
@@ -263,8 +266,8 @@
   }
   .skills-stage::before {
     content:''; position:absolute; inset:-40% -10% auto -10%; height:140%;
-    background:radial-gradient(ellipse 60% 70% at 50% 0%, var(--accent-soft) 0%, transparent 70%);
-    pointer-events:none; opacity:.8;
+    background:radial-gradient(ellipse 60% 70% at 50% 0%, var(--glow-color, var(--accent-soft)) 0%, transparent 70%);
+    pointer-events:none; opacity:.8; transition:background .3s ease;
   }
   .skill-panel { display:none; position:relative; }
   .skill-panel.active { display:block; animation:panelReveal .5s ease; }
@@ -293,7 +296,7 @@
   .proj-link { text-decoration:none; color:inherit; display:block; }
   .proj-card {
     background:var(--card); border:1px solid var(--border);
-    border-radius:14px; padding:24px; cursor:pointer;
+    border-radius:14px; padding:30px; cursor:pointer;
     transition:all .2s; position:relative; overflow:hidden;
   }
   .proj-card::before {
@@ -309,11 +312,11 @@
   .proj-card.cyan::before   { background:#06b6d4; }
   .proj-card.yellow::before { background:#f59e0b; }
   .proj-card.emerald::before{ background:#10b981; }
-  .proj-emoji { font-size:28px; margin-bottom:14px; }
-  .proj-name { font-weight:600; font-size:16px; margin-bottom:8px; }
-  .proj-desc { font-size:14px; color:var(--muted); margin-bottom:16px; line-height:1.5; }
-  .proj-stack { display:flex; flex-wrap:wrap; gap:6px; }
-  .proj-tag { font-size:11px; font-weight:600; padding:3px 9px; border-radius:5px; letter-spacing:.3px; }
+  .proj-emoji { font-size:34px; margin-bottom:16px; }
+  .proj-name { font-weight:600; font-size:19px; margin-bottom:10px; }
+  .proj-desc { font-size:15.5px; color:var(--muted); margin-bottom:18px; line-height:1.6; }
+  .proj-stack { display:flex; flex-wrap:wrap; gap:7px; }
+  .proj-tag { font-size:12.5px; font-weight:600; padding:5px 12px; border-radius:6px; letter-spacing:.3px; }
 
   .edu-grid { display:flex; flex-direction:column; gap:12px; }
   .edu-card { border:1px solid var(--border); border-radius:12px; padding:20px 24px; display:flex; gap:16px; align-items:flex-start; transition:border-color .2s; }
@@ -1015,6 +1018,14 @@
   var currentLang = 'en';
   var activeSkillKey = SKILLS_DATA[0].key;
 
+  var CATEGORY_COLORS = {
+    'tag-orange': { solid:'#FF6B35', glow:'rgba(255,107,53,0.4)' },
+    'tag-purple': { solid:'#7C3AED', glow:'rgba(124,58,237,0.4)' },
+    'tag-green':  { solid:'#10B981', glow:'rgba(16,185,129,0.4)' },
+    'tag-blue':   { solid:'#3B82F6', glow:'rgba(59,130,246,0.4)' },
+    'tag-amber':  { solid:'#F59E0B', glow:'rgba(245,158,11,0.4)' }
+  };
+
   function itemLabel(item) {
     if (typeof item === 'string') return item;
     return item[currentLang] || item.en;
@@ -1028,7 +1039,9 @@
     tabsEl.innerHTML = SKILLS_DATA.map(function(group){
       var label = currentLang === 'es' ? group.es : group.en;
       var active = group.key === activeSkillKey ? ' active' : '';
-      return '<button type="button" class="skills-tab' + active + '" data-key="' + group.key + '" role="tab" aria-selected="' + (group.key === activeSkillKey) + '">' + label + '</button>';
+      var colors = CATEGORY_COLORS[group.cls] || CATEGORY_COLORS['tag-orange'];
+      var style = ' style="--tab-color:' + colors.solid + ';--tab-glow:' + colors.glow + ';"';
+      return '<button type="button" class="skills-tab' + active + '" data-key="' + group.key + '" role="tab" aria-selected="' + (group.key === activeSkillKey) + '"' + style + '>' + label + '</button>';
     }).join('');
 
     stageEl.innerHTML = SKILLS_DATA.map(function(group){
@@ -1045,6 +1058,12 @@
         renderSkills();
       });
     });
+
+    var activeGroup = SKILLS_DATA.find(function(g){ return g.key === activeSkillKey; });
+    if (activeGroup) {
+      var stageColors = CATEGORY_COLORS[activeGroup.cls] || CATEGORY_COLORS['tag-orange'];
+      stageEl.style.setProperty('--glow-color', stageColors.glow);
+    }
 
     bindGlow();
   }
