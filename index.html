@@ -151,9 +151,7 @@
     font-family:'Syne',sans-serif; font-weight:800; font-size:12px; color:var(--accent);
     background:linear-gradient(135deg, rgba(var(--card-rgb),0.95), rgba(var(--card-rgb),0.65));
   }
-  @media (prefers-reduced-motion: reduce) {
-    .nav-avatar-halo, .nav-avatar-ring { animation:none; }
-  }
+  /* El anillo del logo gira siempre (es un detalle mínimo, no afecta accesibilidad de movimiento) */
 
   h1 {
     font-family:'Syne',sans-serif; font-weight:800;
@@ -415,6 +413,20 @@
 
   @media (max-width:600px){ .bg-fx{ display:none; } }
   @media (prefers-reduced-motion: reduce){ .bg-fx animateTransform{ display:none; } }
+
+  .hero-graph {
+    position: absolute;
+    top: 0;
+    right: 6%;
+    width: 42%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.9;
+  }
+  .hero-graph svg { width: 100%; height: 100%; display: block; }
+  @media (max-width: 900px) { .hero-graph { display: none; } }
+  @media (prefers-reduced-motion: reduce) { .hero-graph { display: none; } }
 </style>
 </head>
 <body>
@@ -458,6 +470,21 @@
 <div class="hero" id="about">
   <div class="hero-bg"></div>
   <div class="hero-beam" aria-hidden="true"></div>
+  <div class="hero-graph" aria-hidden="true">
+    <svg id="heroGraphSvg" viewBox="0 0 420 340" preserveAspectRatio="xMidYMid meet">
+      <defs>
+        <filter id="hgGlow" x="-80%" y="-80%" width="260%" height="260%">
+          <feGaussianBlur stdDeviation="2.4" result="hgBlur"/>
+          <feMerge>
+            <feMergeNode in="hgBlur"/>
+            <feMergeNode in="SourceGraphic"/>
+          </feMerge>
+        </filter>
+      </defs>
+      <g id="hgLines" stroke="#FF6B35" fill="none" filter="url(#hgGlow)"></g>
+      <g id="hgNodes" fill="#FF6B35" filter="url(#hgGlow)"></g>
+    </svg>
+  </div>
   <div class="hero-content">
     <div class="hero-tag hero-reveal">
       <span class="dot"></span>
@@ -1201,6 +1228,145 @@
     });
     hero.addEventListener('mouseleave', function(){
       heroBg.style.transform = 'translate(0,0)';
+    });
+  })();
+
+  // ===== Grafo animado del hero: nube de nodos en 3 zonas (núcleo, media, periferia) =====
+  // Cada nodo tiene un ciclo de vida propio (aparece -> se sostiene -> se desvanece -> renace
+  // en la misma zona tras una pausa) para que nunca se sincronicen ni se repita el patrón.
+  function initHeroGraph(staticMode) {
+    var svgEl = document.getElementById('heroGraphSvg');
+    var linesG = document.getElementById('hgLines');
+    var nodesG = document.getElementById('hgNodes');
+    if (!svgEl || !linesG || !nodesG) { return; }
+
+    var W = 420, H = 340, cx = 210, cy = 170;
+    var nodes = [];
+
+    function spawnAt(tier, now) {
+      var a = Math.random() * 6.28, r;
+      if (tier === 2) r = 8 + Math.random() * 14;
+      else if (tier === 1) r = 32 + Math.random() * 42;
+      else r = 62 + Math.random() * 115;
+      var x = Math.max(6, Math.min(W - 6, cx + Math.cos(a) * r));
+      var y = Math.max(6, Math.min(H - 6, cy + Math.sin(a) * r));
+      return {
+        baseX: x, baseY: y, x: x, y: y, tier: tier, op: 0,
+        amp: 6 + Math.random() * 8, speed: 0.15 + Math.random() * 0.2, phase: Math.random() * 6.28,
+        r: tier === 2 ? 5 : (tier === 1 ? 3.2 : 1.8),
+        t0: (now || 0) + Math.random() * 3200,
+        inDur: 900 + Math.random() * 700,
+        holdDur: 2200 + Math.random() * 2600,
+        outDur: 900 + Math.random() * 700
+      };
+    }
+
+    var startTs = 0;
+    for (var i = 0; i < 4; i++) nodes.push(spawnAt(2, startTs));
+    for (var j = 0; j < 12; j++) nodes.push(spawnAt(1, startTs));
+    for (var k = 0; k < 32; k++) nodes.push(spawnAt(0, startTs));
+
+    var svgNS = "http://www.w3.org/2000/svg";
+    var nodeEls = nodes.map(function (n) {
+      var c = document.createElementNS(svgNS, 'circle');
+      c.setAttribute('r', n.r);
+      c.setAttribute('cx', n.x);
+      c.setAttribute('cy', n.y);
+      nodesG.appendChild(c);
+      return c;
+    });
+
+    var edges = [];
+    nodes.forEach(function (n, i) {
+      if (n.tier === 2) { for (var m = 0; m < nodes.length; m++) { if (m !== i && nodes[m].tier === 2) edges.push([i, m]); } }
+    });
+    nodes.forEach(function (n, i) {
+      if (n.tier === 1) {
+        var hubs = nodes.map(function (x, idx) { return idx; }).filter(function (idx) { return nodes[idx].tier === 2; });
+        edges.push([i, hubs[Math.floor(Math.random() * hubs.length)]]);
+        if (Math.random() < 0.5) edges.push([i, hubs[Math.floor(Math.random() * hubs.length)]]);
+      }
+    });
+    nodes.forEach(function (n, i) {
+      if (n.tier === 0) {
+        var mids = nodes.map(function (x, idx) { return idx; }).filter(function (idx) { return nodes[idx].tier === 1; });
+        edges.push([i, mids[Math.floor(Math.random() * mids.length)]]);
+      }
+    });
+    var lineEls = edges.map(function (e) {
+      var l = document.createElementNS(svgNS, 'line');
+      var t = Math.max(nodes[e[0]].tier, nodes[e[1]].tier);
+      l.setAttribute('stroke-width', t === 2 ? '1' : '0.6');
+      linesG.appendChild(l);
+      return l;
+    });
+
+    function ease(x) { return x * x * (3 - 2 * x); }
+
+    function updateNode(n, ts) {
+      n.x = n.baseX + Math.sin(ts / 1000 * n.speed + n.phase) * n.amp;
+      n.y = n.baseY + Math.cos(ts / 1000 * n.speed * 0.8 + n.phase) * n.amp;
+      var elapsed = ts - n.t0;
+      if (elapsed < 0) {
+        n.op = 0;
+      } else if (elapsed < n.inDur) {
+        n.op = ease(elapsed / n.inDur);
+      } else if (elapsed < n.inDur + n.holdDur) {
+        n.op = 1;
+      } else if (elapsed < n.inDur + n.holdDur + n.outDur) {
+        n.op = 1 - ease((elapsed - n.inDur - n.holdDur) / n.outDur);
+      } else {
+        var fresh = spawnAt(n.tier, ts);
+        n.baseX = fresh.baseX; n.baseY = fresh.baseY;
+        n.amp = fresh.amp; n.speed = fresh.speed; n.phase = fresh.phase;
+        n.t0 = fresh.t0; n.inDur = fresh.inDur; n.holdDur = fresh.holdDur; n.outDur = fresh.outDur;
+        n.op = 0;
+      }
+    }
+
+    function paint() {
+      nodeEls.forEach(function (el, i) {
+        var n = nodes[i];
+        el.setAttribute('cx', n.x);
+        el.setAttribute('cy', n.y);
+        var base = n.tier === 2 ? 0.9 : (n.tier === 1 ? 0.7 : 0.5);
+        el.setAttribute('opacity', n.op * base);
+      });
+      lineEls.forEach(function (el, i) {
+        var e = edges[i];
+        var a = nodes[e[0]], b = nodes[e[1]];
+        el.setAttribute('x1', a.x); el.setAttribute('y1', a.y);
+        el.setAttribute('x2', b.x); el.setAttribute('y2', b.y);
+        var t2 = Math.max(a.tier, b.tier);
+        var base = t2 === 2 ? 0.45 : (t2 === 1 ? 0.25 : 0.14);
+        el.setAttribute('stroke-opacity', a.op * b.op * base);
+      });
+    }
+
+    if (staticMode) {
+      // Movimiento reducido: se pinta una sola composición estable y visible, sin bucle de animación.
+      nodes.forEach(function (n) { n.op = n.tier === 2 ? 0.9 : (n.tier === 1 ? 0.7 : 0.5); n.x = n.baseX; n.y = n.baseY; });
+      paint();
+      return;
+    }
+
+    function tick(ts) {
+      nodes.forEach(function (n) { updateNode(n, ts); });
+      paint();
+      requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  }
+
+  (function () {
+    var reduceMotionGraph = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (window.innerWidth > 900) {
+      initHeroGraph(reduceMotionGraph);
+    }
+    window.addEventListener('resize', function onceResize() {
+      if (window.innerWidth > 900 && !document.getElementById('hgNodes').childElementCount) {
+        initHeroGraph(window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+      }
     });
   })();
 
