@@ -382,13 +382,35 @@
       transition:max-height .3s ease, opacity .25s ease;
       order:3;
     }
-    nav.nav-open .nav-links { max-height:320px; opacity:1; margin-top:14px; }
+    nav.nav-open .nav-links { max-height:520px; opacity:1; margin-top:14px; }
     .nav-links a { padding:12px 4px; border-top:1px solid var(--border); font-size:15px; }
     .nav-links a.active::after { display:none; }
     section { padding:60px 16px; }
     .hero { padding:100px 16px 60px; }
     .hero-stats { gap:20px; }
     .skills-stage { padding:22px; }
+
+    /* En móvil el orden visual del nav se invierte: el logo pasa a la
+       derecha y los controles (idioma/tema/menú) a la izquierda, para que
+       no queden todos amontonados sobre el nombre del sitio. */
+    nav { flex-direction:row-reverse; }
+    nav.nav-open .nav-links { order:4; width:100%; }
+
+    /* Los botones ES/EN y el toggle de tema ahora viven dentro del menú
+       desplegable junto con los links de navegación, en vez de ir sueltos
+       en la barra superior. Solo el botón de hamburguesa queda visible
+       siempre. */
+    .nav-controls-inline { display:none; }
+    .nav-burger { order:1; }
+
+    .nav-links {
+      gap:0;
+    }
+    .nav-mobile-extras {
+      display:flex; align-items:center; justify-content:space-between;
+      padding:14px 4px 4px; border-top:1px solid var(--border); margin-top:4px;
+    }
+    .nav-mobile-extras .lang-toggle { background:rgba(var(--text-rgb),0.06); }
 
     /* Botones del hero en móvil: solo el CTA principal queda visible +
        un botón "Más ⌄" que despliega el resto (Get in touch, CV EN/ES)
@@ -442,6 +464,11 @@
       text-align:center;
       padding:14px 20px;
     }
+
+    /* Líneas de fondo desactivadas por completo en móvil: al no tener
+       parallax ni reaccionar al scroll en pantallas táctiles, solo se
+       veían como líneas estáticas que confundían la lectura. */
+    .bg-fx { display:none !important; }
   }
 
   @media (min-width:601px) {
@@ -450,6 +477,7 @@
     .hero-more-panel {
       display:contents;
     }
+    .nav-mobile-extras { display:none; }
   }
 
   .theme-toggle-btn{width:36px;height:36px;border-radius:50%;border:1px solid var(--border);background:rgba(var(--text-rgb),0.06);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform .15s ease, background-color .2s ease;flex-shrink:0;color:var(--text);}
@@ -489,13 +517,6 @@
   .fx-3 { stroke:var(--fx-c3); opacity:var(--fx-op-3); }
   .fx-4 { stroke:var(--fx-c4); opacity:var(--fx-op-4); }
 
-  /* En móvil ahora SÍ se muestran las líneas (antes se ocultaban por
-     completo), pero más finas y discretas para no competir con el
-     contenido en pantallas angostas. */
-  @media (max-width:600px){
-    .bg-fx { display:block; }
-    .bg-fx .fx-line { stroke-width: 2; }
-  }
   @media (prefers-reduced-motion: reduce){ .bg-fx animateTransform{ display:none; } }
 
   .hero-graph {
@@ -527,15 +548,25 @@
     </span>
     efra<span>.</span>builder
   </div>
-  <div class="nav-links">
+  <div class="nav-links" id="nav-links-list">
     <a href="#about" onclick="smoothScroll(event,this)" data-en="About" data-es="Sobre mí">About</a>
     <a href="#skills" onclick="smoothScroll(event,this)" data-en="Skills" data-es="Habilidades">Skills</a>
     <a href="#projects" onclick="smoothScroll(event,this)" data-en="Projects" data-es="Proyectos">Projects</a>
     <a href="#experience" onclick="smoothScroll(event,this)" data-en="Experience" data-es="Experiencia">Experience</a>
     <a href="#education" onclick="smoothScroll(event,this)" data-en="Education" data-es="Educación">Education</a>
     <a href="#contact" onclick="smoothScroll(event,this)" data-en="Contact" data-es="Contacto">Contact</a>
+    <div class="nav-mobile-extras">
+      <div class="lang-toggle">
+        <button class="lang-btn" id="btn-es-mobile" onclick="setLang('es')" aria-label="Cambiar idioma a Español" aria-pressed="false">ES</button>
+        <button class="lang-btn active" id="btn-en-mobile" onclick="setLang('en')" aria-label="Switch language to English" aria-pressed="true">EN</button>
+      </div>
+      <button class="theme-toggle-btn" id="theme-toggle-mobile" title="Cambiar tema" aria-label="Cambiar tema claro/oscuro">
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+    </div>
   </div>
- <div style="display:flex;align-items:center;gap:10px;">
+ <div class="nav-controls-inline" style="display:flex;align-items:center;gap:10px;">
     <div class="lang-toggle">
       <button class="lang-btn" id="btn-es" onclick="setLang('es')" aria-label="Cambiar idioma a Español" aria-pressed="false">ES</button>
       <button class="lang-btn active" id="btn-en" onclick="setLang('en')" aria-label="Switch language to English" aria-pressed="true">EN</button>
@@ -544,10 +575,10 @@
       <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
       <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
     </button>
-    <button class="nav-burger" id="nav-burger" aria-label="Abrir menú de navegación" aria-expanded="false" aria-controls="nav-links-list">
-      <span></span>
-    </button>
   </div>
+  <button class="nav-burger" id="nav-burger" aria-label="Abrir menú de navegación" aria-expanded="false" aria-controls="nav-links-list">
+    <span></span>
+  </button>
 </nav>
 <div class="scroll-progress" id="scroll-progress" aria-hidden="true"></div>
 
@@ -1200,6 +1231,16 @@
     document.getElementById('btn-es').classList.toggle('active', lang === 'es');
     document.getElementById('btn-en').setAttribute('aria-pressed', lang === 'en');
     document.getElementById('btn-es').setAttribute('aria-pressed', lang === 'es');
+    var btnEnMobile = document.getElementById('btn-en-mobile');
+    var btnEsMobile = document.getElementById('btn-es-mobile');
+    if (btnEnMobile) {
+      btnEnMobile.classList.toggle('active', lang === 'en');
+      btnEnMobile.setAttribute('aria-pressed', lang === 'en');
+    }
+    if (btnEsMobile) {
+      btnEsMobile.classList.toggle('active', lang === 'es');
+      btnEsMobile.setAttribute('aria-pressed', lang === 'es');
+    }
     document.getElementById('cv-btn-en').style.display = lang === 'en' ? 'inline-block' : 'none';
     document.getElementById('cv-btn-es').style.display = lang === 'es' ? 'inline-block' : 'none';
     renderSkills();
@@ -1207,10 +1248,9 @@
 
   (function(){
     var root = document.documentElement;
-    var btn = document.getElementById('theme-toggle');
     var saved = localStorage.getItem('theme');
     if (saved === 'light') root.setAttribute('data-theme', 'light');
-    btn.addEventListener('click', function(){
+    function toggleTheme(){
       var isLight = root.getAttribute('data-theme') === 'light';
       if (isLight) {
         root.removeAttribute('data-theme');
@@ -1219,7 +1259,11 @@
         root.setAttribute('data-theme', 'light');
         localStorage.setItem('theme', 'light');
       }
-    });
+    }
+    var btn = document.getElementById('theme-toggle');
+    if (btn) btn.addEventListener('click', toggleTheme);
+    var btnMobile = document.getElementById('theme-toggle-mobile');
+    if (btnMobile) btnMobile.addEventListener('click', toggleTheme);
   })();
 
   // ===== Menú "Más" de los botones del hero en móvil: despliega los
@@ -1292,7 +1336,7 @@
 
   // ===== Líneas de fondo (bg-fx): permanecen invisibles hasta que el
   // usuario empieza a bajar por la página, luego se revelan con fade.
-  // Ahora también se muestran en móvil (antes se ocultaban por completo). =====
+  // Solo aplica en desktop: en móvil el CSS oculta bg-fx por completo. =====
   (function(){
     var bgFx = document.getElementById('bg-fx');
     if (!bgFx) return;
@@ -1310,22 +1354,45 @@
     fxObserver.observe(bgFx);
   })();
 
-  // ===== Atenuación de las líneas de fondo durante el scroll en desktop.
-  // Antes se sentían "pegadas" a la pantalla mientras el usuario se
-  // desplazaba rápido; ahora bajan levemente su opacidad mientras hay
-  // scroll activo y regresan a la normal ~180ms después de detenerse. =====
+  // ===== Fluidez de las líneas de fondo en desktop: en vez de atenuar
+  // la opacidad de golpe durante el scroll (lo que se sentía como un
+  // "parpadeo" o salto), ahora se interpola suavemente con requestAnimationFrame
+  // hacia el valor objetivo (0.55 mientras hay scroll activo, 1 en reposo),
+  // dando una transición continua y fluida en vez de un cambio abrupto. =====
   (function(){
     var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (reduceMotion) return;
     var root = document.documentElement;
-    var scrollTimer = null;
     var isDesktop = window.matchMedia('(min-width: 601px)').matches;
     if (!isDesktop) return;
+
+    var current = 1;
+    var target = 1;
+    var scrollTimer = null;
+    var rafId = null;
+
+    function step() {
+      current += (target - current) * 0.12;
+      if (Math.abs(target - current) < 0.002) current = target;
+      root.style.setProperty('--fx-scroll-fade', current.toFixed(3));
+      if (current !== target) {
+        rafId = requestAnimationFrame(step);
+      } else {
+        rafId = null;
+      }
+    }
+
+    function requestStep() {
+      if (rafId === null) rafId = requestAnimationFrame(step);
+    }
+
     window.addEventListener('scroll', function(){
-      root.style.setProperty('--fx-scroll-fade', '0.55');
+      target = 0.55;
+      requestStep();
       if (scrollTimer) clearTimeout(scrollTimer);
       scrollTimer = setTimeout(function(){
-        root.style.setProperty('--fx-scroll-fade', '1');
+        target = 1;
+        requestStep();
       }, 180);
     }, { passive: true });
   })();
