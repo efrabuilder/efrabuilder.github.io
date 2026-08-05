@@ -390,19 +390,17 @@
     .hero-stats { gap:20px; }
     .skills-stage { padding:22px; }
 
-    /* En móvil el orden visual del nav se invierte: el logo pasa a la
-       derecha y los controles (idioma/tema/menú) a la izquierda, para que
-       no queden todos amontonados sobre el nombre del sitio. */
-    nav { flex-direction:row-reverse; }
-    nav.nav-open .nav-links { order:4; width:100%; }
+    /* Orden del nav en móvil: logo a la izquierda, menú hamburguesa a la
+       derecha (igual que en escritorio). Antes se invertía con
+       row-reverse; ahora se deja en fila normal para que el logo quede
+       donde marca la flecha (izquierda) y el desplegable donde indica la
+       imagen (derecha). */
     .nav-logo { order:0; }
+    .nav-burger { order:2; }
 
-    /* Los botones ES/EN y el toggle de tema ahora viven dentro del menú
-       desplegable junto con los links de navegación, en vez de ir sueltos
-       en la barra superior. Solo el botón de hamburguesa queda visible
-       siempre. */
+    /* Los botones ES/EN y el toggle de tema viven solo dentro del menú
+       desplegable (nav-mobile-extras), nunca sueltos en la barra superior. */
     .nav-controls-inline { display:none; }
-    .nav-burger { order:1; }
 
     .nav-links {
       gap:0;
@@ -466,10 +464,38 @@
       padding:14px 20px;
     }
 
-    /* Líneas de fondo desactivadas por completo en móvil: al no tener
-       parallax ni reaccionar al scroll en pantallas táctiles, solo se
-       veían como líneas estáticas que confundían la lectura. */
-    .bg-fx { display:none !important; }
+    /* Líneas de fondo: en móvil se mantienen visibles pero estáticas (sin
+       animación de desplazamiento ni de aparición por scroll), a
+       diferencia de escritorio donde siguen su comportamiento original. */
+    .bg-fx { opacity:1 !important; transition:none !important; }
+    .fx-track { animation:none !important; }
+
+    /* Secciones: en móvil aparecen fijas/estáticas desde el inicio, sin
+       la animación de aparición al hacer scroll que sí se mantiene en
+       escritorio. */
+    .reveal {
+      opacity:1 !important;
+      transform:none !important;
+      transition:none !important;
+    }
+  }
+
+  /* En horizontal (landscape) dentro de un teléfono, el nav se muestra
+     igual que en la versión de escritorio: enlaces en línea y sin menú
+     hamburguesa, incluso si el ancho cae por debajo del breakpoint de
+     600px (algunos teléfonos en horizontal, p. ej. iPhone SE, miden menos
+     de 600px de ancho). */
+  @media (orientation:landscape) and (max-height:600px) {
+    nav { flex-wrap:nowrap; }
+    .nav-burger { display:none !important; }
+    .nav-links {
+      display:flex !important; flex-direction:row !important; gap:24px !important;
+      width:auto !important; max-height:none !important; overflow:visible !important;
+      opacity:1 !important; order:0 !important; transition:none !important;
+    }
+    .nav-links a { padding:0; border-top:none; font-size:14px; }
+    .nav-mobile-extras { display:none !important; }
+    .nav-controls-inline { display:flex !important; }
   }
 
   @media (min-width:601px) {
@@ -1308,12 +1334,16 @@
   // ===== Revelado de secciones: aparece la primera vez que entra en vista
   // y se queda visible de forma permanente (antes se ocultaba de nuevo al
   // salir del viewport, lo que en móvil provocaba que el contenido "se
-  // perdiera" y no siempre volviera a aparecer al bajar/subir). =====
+  // perdiera" y no siempre volviera a aparecer al bajar/subir). En móvil
+  // esta animación está desactivada por completo vía CSS (.reveal queda
+  // siempre visible), así que aquí basta con marcar todo como visible de
+  // una vez cuando el ancho es de tipo móvil. =====
   (function(){
     var revealEls = document.querySelectorAll('.reveal');
     if (!revealEls.length) return;
     var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (reduceMotion) {
+    var isMobileWidth = window.matchMedia('(max-width:600px)').matches;
+    if (reduceMotion || isMobileWidth) {
       revealEls.forEach(function(el){ el.classList.add('is-visible'); });
       return;
     }
@@ -1337,7 +1367,9 @@
   // Ahora se mide el alto real del contenedor y se generan filas de líneas
   // cada 240px hasta cubrir todo ese alto. La animación horizontal sigue
   // siendo 100% CSS (fluida, sin recalcular nada por frame): cada fila se
-  // agrega al mismo <g class="fx-track-N"> que ya se mueve con CSS.
+  // agrega al mismo <g class="fx-track-N"> que ya se mueve con CSS (en
+  // móvil esa animación queda desactivada vía CSS para que las líneas se
+  // vean fijas/estáticas).
   function buildBgFx() {
     var svg = document.getElementById('bgFxSvg');
     var wrap = document.querySelector('.content-fx-wrap');
@@ -1400,14 +1432,16 @@
     }
   })();
 
-  // ===== Líneas de fondo (bg-fx): permanecen invisibles hasta que el
-  // usuario empieza a bajar por la página, luego se revelan con fade.
-  // Solo aplica en desktop: en móvil el CSS oculta bg-fx por completo. =====
+  // ===== Líneas de fondo (bg-fx): en escritorio permanecen invisibles
+  // hasta que el usuario empieza a bajar por la página, luego se revelan
+  // con fade. En móvil quedan siempre visibles (opacity:1 forzado por
+  // CSS), así que este observer solo aplica en escritorio. =====
   (function(){
     var bgFx = document.getElementById('bg-fx');
     if (!bgFx) return;
     var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (reduceMotion) { bgFx.classList.add('is-visible'); return; }
+    var isMobileWidth = window.matchMedia('(max-width:600px)').matches;
+    if (reduceMotion || isMobileWidth) { bgFx.classList.add('is-visible'); return; }
     var fxObserver = new IntersectionObserver(function(entries){
       entries.forEach(function(entry){
         if (entry.isIntersecting) {
@@ -1424,7 +1458,8 @@
   // la opacidad de golpe durante el scroll (lo que se sentía como un
   // "parpadeo" o salto), ahora se interpola suavemente con requestAnimationFrame
   // hacia el valor objetivo (0.55 mientras hay scroll activo, 1 en reposo),
-  // dando una transición continua y fluida en vez de un cambio abrupto. =====
+  // dando una transición continua y fluida en vez de un cambio abrupto.
+  // Solo aplica en escritorio; en móvil las líneas quedan fijas. =====
   (function(){
     var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (reduceMotion) return;
