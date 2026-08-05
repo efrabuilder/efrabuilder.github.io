@@ -5,6 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Efraín Sebastian Rojas Artavia — Portfolio</title>
 <meta name="description" content="Efraín Sebastian Rojas Artavia — Software Engineering student building networking, automation, web development and cybersecurity projects.">
+<!-- Íconos: PNG reales para móvil (Safari iOS / Chrome Android no siempre
+     renderizan bien el favicon SVG en data URI), con el SVG como reserva
+     para navegadores de escritorio modernos. -->
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230D0D0D'/%3E%3Ctext x='32' y='44' font-family='Arial, sans-serif' font-weight='800' font-size='34' text-anchor='middle' fill='%23F0EEE8'%3Ee%3Ctspan fill='%23FF6B35'%3E.%3C/tspan%3E%3C/text%3E%3C/svg%3E">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Efraín Sebastian Rojas Artavia — Portfolio">
@@ -382,6 +389,67 @@
     .hero { padding:100px 16px 60px; }
     .hero-stats { gap:20px; }
     .skills-stage { padding:22px; }
+
+    /* Botones del hero en móvil: solo el CTA principal queda visible +
+       un botón "Más ⌄" que despliega el resto (Get in touch, CV EN/ES)
+       en un menú desplegable, en vez de apilar 4 botones sueltos. */
+    .hero-actions {
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      width:100%;
+      position:relative;
+    }
+    .hero-actions .btn-primary {
+      width:100%;
+      text-align:center;
+      padding:14px 20px;
+    }
+    .hero-more-toggle {
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:6px;
+      width:100%;
+      text-align:center;
+      padding:14px 20px;
+      background:transparent;
+      color:var(--accent);
+      border:1px solid var(--accent-border);
+      border-radius:8px;
+      font-size:15px;
+      font-family:'Space Grotesk',sans-serif;
+      cursor:pointer;
+    }
+    .hero-more-toggle .chev { transition:transform .2s ease; font-size:12px; }
+    .hero-actions.is-open .hero-more-toggle .chev { transform:rotate(180deg); }
+    .hero-more-panel {
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      max-height:0;
+      overflow:hidden;
+      opacity:0;
+      transition:max-height .3s ease, opacity .25s ease;
+      width:100%;
+    }
+    .hero-actions.is-open .hero-more-panel {
+      max-height:260px;
+      opacity:1;
+    }
+    .hero-more-panel .btn-outline {
+      width:100%;
+      text-align:center;
+      padding:14px 20px;
+    }
+  }
+
+  @media (min-width:601px) {
+    /* En escritorio el toggle no aplica: todo se muestra en fila normal. */
+    .hero-more-toggle { display:none; }
+    .hero-more-panel {
+      display:contents;
+    }
   }
 
   .theme-toggle-btn{width:36px;height:36px;border-radius:50%;border:1px solid var(--border);background:rgba(var(--text-rgb),0.06);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform .15s ease, background-color .2s ease;flex-shrink:0;color:var(--text);}
@@ -391,11 +459,16 @@
   html[data-theme="light"] .theme-toggle-btn .icon-sun{display:none;}
   html[data-theme="light"] .theme-toggle-btn .icon-moon{display:block;}
 
-  /* Líneas de fondo: ahora inician invisibles y se revelan al hacer scroll */
+  /* Líneas de fondo: ahora inician invisibles y se revelan al hacer scroll.
+     La opacidad máxima ahora se controla con --fx-max-op (ver JS de scroll)
+     para que en desktop no se sientan "pegadas" durante el scroll continuo:
+     se atenúan levemente mientras el usuario se desplaza y vuelven a su
+     opacidad normal al detenerse. */
   :root {
     --fx-blend: screen;
     --fx-op-1: .55; --fx-op-2: .55; --fx-op-3: .4; --fx-op-4: .55;
     --fx-c1: #00F0FF; --fx-c2: #FF2FE0; --fx-c3: #B6FF00; --fx-c4: #FF6A00;
+    --fx-scroll-fade: 1;
   }
   html[data-theme="light"] {
     --fx-blend: multiply;
@@ -407,7 +480,7 @@
     opacity: 0;
     transition: opacity 1.1s ease;
   }
-  .bg-fx.is-visible { opacity: 1; }
+  .bg-fx.is-visible { opacity: calc(1 * var(--fx-scroll-fade, 1)); }
   .content-fx-wrap { position: relative; }
   .bg-fx svg { width: 100%; height: 100%; display: block; mix-blend-mode: var(--fx-blend); shape-rendering: geometricPrecision; }
   .bg-fx .fx-line { fill: none; stroke-width: 3.5; stroke-linecap: round; vector-effect: non-scaling-stroke; transition: stroke .4s ease, opacity .4s ease; }
@@ -416,7 +489,13 @@
   .fx-3 { stroke:var(--fx-c3); opacity:var(--fx-op-3); }
   .fx-4 { stroke:var(--fx-c4); opacity:var(--fx-op-4); }
 
-  @media (max-width:600px){ .bg-fx{ display:none; } }
+  /* En móvil ahora SÍ se muestran las líneas (antes se ocultaban por
+     completo), pero más finas y discretas para no competir con el
+     contenido en pantallas angostas. */
+  @media (max-width:600px){
+    .bg-fx { display:block; }
+    .bg-fx .fx-line { stroke-width: 2; }
+  }
   @media (prefers-reduced-motion: reduce){ .bg-fx animateTransform{ display:none; } }
 
   .hero-graph {
@@ -497,11 +576,16 @@
     </div>
     <h1 class="hero-reveal"><span class="name-line">Efraín Sebastian Rojas Artavia</span><span class="line2" data-en="builds software." data-es="construye software.">builds software.</span></h1>
     <p class="hero-sub hero-reveal" data-en="Software Engineering student passionate about networking, automation, web development, data analysis, and cybersecurity. Based in Atenas, Costa Rica." data-es="Estudiante de Ingeniería en Informatica (Software Engineering) apasionado por el networking, la automatización, el desarrollo web, el análisis de datos y la ciberseguridad. Ubicado en Atenas, Costa Rica.">Software Engineering student passionate about networking, automation, web development, data analysis, and cybersecurity. Based in Atenas, Costa Rica.</p>
-    <div class="hero-actions hero-reveal">
+    <div class="hero-actions hero-reveal" id="hero-actions">
       <a class="btn-primary" href="#projects" onclick="smoothScroll(event,this)" data-en="View projects ↓" data-es="Ver proyectos ↓">View projects ↓</a>
-      <a class="btn-outline" href="#contact" onclick="smoothScroll(event,this)" data-en="Get in touch" data-es="Contáctame">Get in touch</a>
-     <a class="btn-outline" id="cv-btn-en" href="https://raw.githubusercontent.com/efrabuilder/efrabuilder.github.io/main/CV_Efrain_Rojas_EN.pdf" target="_blank">View CV ↓</a>
-     <a class="btn-outline" id="cv-btn-es" href="https://raw.githubusercontent.com/efrabuilder/efrabuilder.github.io/main/CV_Efrain_Rojas_ES.pdf" target="_blank" style="display:none">Ver CV ↓</a>
+      <button type="button" class="hero-more-toggle" id="hero-more-toggle" aria-expanded="false" aria-controls="hero-more-panel">
+        <span data-en="More" data-es="Más">More</span> <span class="chev">⌄</span>
+      </button>
+      <div class="hero-more-panel" id="hero-more-panel">
+        <a class="btn-outline" href="#contact" onclick="smoothScroll(event,this)" data-en="Get in touch" data-es="Contáctame">Get in touch</a>
+        <a class="btn-outline" id="cv-btn-en" href="https://raw.githubusercontent.com/efrabuilder/efrabuilder.github.io/main/CV_Efrain_Rojas_EN.pdf" target="_blank">View CV ↓</a>
+        <a class="btn-outline" id="cv-btn-es" href="https://raw.githubusercontent.com/efrabuilder/efrabuilder.github.io/main/CV_Efrain_Rojas_ES.pdf" target="_blank" style="display:none">Ver CV ↓</a>
+      </div>
     </div>
     <div class="hero-stats hero-reveal">
       <div class="stat"><div class="stat-n">11+</div><div class="stat-l" data-en="projects" data-es="proyectos">projects</div></div>
@@ -1138,6 +1222,18 @@
     });
   })();
 
+  // ===== Menú "Más" de los botones del hero en móvil: despliega los
+  // botones secundarios (Contáctame, CV EN/ES) en vez de amontonarlos. =====
+  (function(){
+    var heroActions = document.getElementById('hero-actions');
+    var moreToggle = document.getElementById('hero-more-toggle');
+    if (!heroActions || !moreToggle) return;
+    moreToggle.addEventListener('click', function(){
+      var isOpen = heroActions.classList.toggle('is-open');
+      moreToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    });
+  })();
+
   var navEl = document.querySelector('nav');
   var burgerBtn = document.getElementById('nav-burger');
   function closeMobileNav() {
@@ -1195,7 +1291,8 @@
   })();
 
   // ===== Líneas de fondo (bg-fx): permanecen invisibles hasta que el
-  // usuario empieza a bajar por la página, luego se revelan con fade. =====
+  // usuario empieza a bajar por la página, luego se revelan con fade.
+  // Ahora también se muestran en móvil (antes se ocultaban por completo). =====
   (function(){
     var bgFx = document.getElementById('bg-fx');
     if (!bgFx) return;
@@ -1211,6 +1308,26 @@
       });
     }, { threshold: 0.01 });
     fxObserver.observe(bgFx);
+  })();
+
+  // ===== Atenuación de las líneas de fondo durante el scroll en desktop.
+  // Antes se sentían "pegadas" a la pantalla mientras el usuario se
+  // desplazaba rápido; ahora bajan levemente su opacidad mientras hay
+  // scroll activo y regresan a la normal ~180ms después de detenerse. =====
+  (function(){
+    var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduceMotion) return;
+    var root = document.documentElement;
+    var scrollTimer = null;
+    var isDesktop = window.matchMedia('(min-width: 601px)').matches;
+    if (!isDesktop) return;
+    window.addEventListener('scroll', function(){
+      root.style.setProperty('--fx-scroll-fade', '0.55');
+      if (scrollTimer) clearTimeout(scrollTimer);
+      scrollTimer = setTimeout(function(){
+        root.style.setProperty('--fx-scroll-fade', '1');
+      }, 180);
+    }, { passive: true });
   })();
 
   (function(){
