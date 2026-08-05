@@ -94,6 +94,7 @@
   nav.nav-open .nav-burger span::before { transform:translateY(6px) rotate(45deg); }
   nav.nav-open .nav-burger span::after { transform:translateY(-6px) rotate(-45deg); }
   .lang-toggle { display:flex; gap:4px; background:rgba(var(--text-rgb),0.06); border-radius:20px; padding:3px; }
+  .nav-controls-inline { display:flex; align-items:center; gap:10px; }
   .lang-btn { border:none; background:transparent; color:var(--muted); font-size:13px; font-family:'Space Grotesk',sans-serif; padding:4px 12px; border-radius:16px; cursor:pointer; transition:all .2s; }
   .lang-btn.active { background:var(--accent); color:#fff; }
 
@@ -373,7 +374,7 @@
     .reveal { opacity:1; transform:none; transition:none; }
   }
 
-  @media (max-width:600px) {
+  @media (max-width:600px), (orientation:landscape) and (max-height:600px) {
     nav { padding:12px 16px; flex-wrap:wrap; }
     .nav-burger { display:flex; }
     .nav-links {
@@ -399,7 +400,10 @@
     .nav-burger { order:2; }
 
     /* Los botones ES/EN y el toggle de tema viven solo dentro del menú
-       desplegable (nav-mobile-extras), nunca sueltos en la barra superior. */
+       desplegable (nav-mobile-extras), nunca sueltos en la barra superior.
+       Este bloque ahora también aplica en horizontal (landscape) en
+       teléfonos, para que el menú desplegable se mantenga en vez de
+       cambiar al estilo de escritorio. */
     .nav-controls-inline { display:none; }
 
     .nav-links {
@@ -464,11 +468,10 @@
       padding:14px 20px;
     }
 
-    /* Líneas de fondo: en móvil se mantienen visibles pero estáticas (sin
-       animación de desplazamiento ni de aparición por scroll), a
-       diferencia de escritorio donde siguen su comportamiento original. */
-    .bg-fx { opacity:1 !important; transition:none !important; }
-    .fx-track { animation:none !important; }
+    /* Líneas de fondo: en móvil (incluyendo horizontal/landscape) se
+       ocultan por completo — no se generan visualmente, no solo quedan
+       estáticas. */
+    .bg-fx { display:none !important; }
 
     /* Secciones: en móvil aparecen fijas/estáticas desde el inicio, sin
        la animación de aparición al hacer scroll que sí se mantiene en
@@ -480,26 +483,11 @@
     }
   }
 
-  /* En horizontal (landscape) dentro de un teléfono, el nav se muestra
-     igual que en la versión de escritorio: enlaces en línea y sin menú
-     hamburguesa, incluso si el ancho cae por debajo del breakpoint de
-     600px (algunos teléfonos en horizontal, p. ej. iPhone SE, miden menos
-     de 600px de ancho). */
-  @media (orientation:landscape) and (max-height:600px) {
-    nav { flex-wrap:nowrap; }
-    .nav-burger { display:none !important; }
-    .nav-links {
-      display:flex !important; flex-direction:row !important; gap:24px !important;
-      width:auto !important; max-height:none !important; overflow:visible !important;
-      opacity:1 !important; order:0 !important; transition:none !important;
-    }
-    .nav-links a { padding:0; border-top:none; font-size:14px; }
-    .nav-mobile-extras { display:none !important; }
-    .nav-controls-inline { display:flex !important; }
-  }
-
-  @media (min-width:601px) {
-    /* En escritorio el toggle no aplica: todo se muestra en fila normal. */
+  @media (min-width:601px) and (min-height:601px) {
+    /* En escritorio el toggle no aplica: todo se muestra en fila normal.
+       Se exige también min-height:601px para que los teléfonos en
+       horizontal (landscape, altura reducida) sigan usando el menú
+       desplegable en vez de este layout de escritorio. */
     .hero-more-toggle { display:none; }
     .hero-more-panel {
       display:contents;
@@ -561,7 +549,7 @@
     position: absolute;
     top: -18px;
     right: 1%;
-    width: 44%;
+    width: 36%;
     height: 100%;
     pointer-events: none;
     z-index: 0;
@@ -604,7 +592,7 @@
       </button>
     </div>
   </div>
- <div class="nav-controls-inline" style="display:flex;align-items:center;gap:10px;">
+ <div class="nav-controls-inline">
     <div class="lang-toggle">
       <button class="lang-btn" id="btn-es" onclick="setLang('es')" aria-label="Cambiar idioma a Español" aria-pressed="false">ES</button>
       <button class="lang-btn active" id="btn-en" onclick="setLang('en')" aria-label="Switch language to English" aria-pressed="true">EN</button>
@@ -1368,8 +1356,7 @@
   // cada 240px hasta cubrir todo ese alto. La animación horizontal sigue
   // siendo 100% CSS (fluida, sin recalcular nada por frame): cada fila se
   // agrega al mismo <g class="fx-track-N"> que ya se mueve con CSS (en
-  // móvil esa animación queda desactivada vía CSS para que las líneas se
-  // vean fijas/estáticas).
+  // móvil esta sección entera queda oculta con display:none vía CSS).
   function buildBgFx() {
     var svg = document.getElementById('bgFxSvg');
     var wrap = document.querySelector('.content-fx-wrap');
@@ -1434,8 +1421,8 @@
 
   // ===== Líneas de fondo (bg-fx): en escritorio permanecen invisibles
   // hasta que el usuario empieza a bajar por la página, luego se revelan
-  // con fade. En móvil quedan siempre visibles (opacity:1 forzado por
-  // CSS), así que este observer solo aplica en escritorio. =====
+  // con fade. En móvil quedan completamente ocultas (display:none forzado
+  // por CSS), así que este observer solo aplica en escritorio. =====
   (function(){
     var bgFx = document.getElementById('bg-fx');
     if (!bgFx) return;
@@ -1459,7 +1446,7 @@
   // "parpadeo" o salto), ahora se interpola suavemente con requestAnimationFrame
   // hacia el valor objetivo (0.55 mientras hay scroll activo, 1 en reposo),
   // dando una transición continua y fluida en vez de un cambio abrupto.
-  // Solo aplica en escritorio; en móvil las líneas quedan fijas. =====
+  // Solo aplica en escritorio; en móvil las líneas quedan ocultas. =====
   (function(){
     var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (reduceMotion) return;
@@ -1551,9 +1538,11 @@
 
   // ===== Grafo animado del hero: nace del halo de luz que recorre el
   // nombre ("Efraín Sebastian Rojas Artavia"). Los primeros nodos brotan
-  // desde ese punto de origen (parte alta-izquierda del viewBox, sobre la
+  // desde ese punto de origen (parte alta-derecha del viewBox, sobre la
   // franja donde pasa el brillo del texto) y desde ahí germina el resto
-  // de la red en 3 zonas concéntricas (núcleo, media, periferia). =====
+  // de la red en 3 zonas concéntricas (núcleo, media, periferia). El
+  // origen se centró más hacia abajo, dentro del área central-derecha
+  // del hero, en vez de pegado a la esquina superior. =====
   function initHeroGraph(staticMode) {
     var svgEl = document.getElementById('heroGraphSvg');
     var linesG = document.getElementById('hgLines');
@@ -1566,7 +1555,7 @@
     // "builds software." al cargar la página. Todo el árbol nace y
     // respira desde aquí, y el grafo solo empieza a dibujarse cuando
     // esa franja de luz ha terminado su recorrido.
-    var cx = 372, cy = 44;
+    var cx = 130, cy = 130;
     var graphStartDelay = 2400; // ms — coincide con el fin de heroBeam (2.4s)
     var nodes = [];
 
@@ -1574,7 +1563,7 @@
       var a = Math.random() * 6.28, r;
       if (tier === 2) r = 8 + Math.random() * 14;
       else if (tier === 1) r = 34 + Math.random() * 58;
-      else r = 75 + Math.random() * 175;
+      else r = 40 + Math.random() * 70;
       var x = Math.max(6, Math.min(W - 6, cx + Math.cos(a) * r));
       var y = Math.max(6, Math.min(H - 6, cy + Math.sin(a) * r));
       return {
