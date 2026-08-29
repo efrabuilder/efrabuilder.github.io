@@ -281,13 +281,31 @@
   .skill-panel.active { display:block; animation:panelReveal .5s ease; }
   @keyframes panelReveal { from{ opacity:0; transform:translateY(8px);} to{ opacity:1; transform:translateY(0);} }
   .skill-tags { display:flex; flex-wrap:wrap; gap:9px; position:relative; }
-  .tag { padding:7px 15px; border-radius:6px; font-size:13px; font-weight:500; transition:transform .15s; cursor:default; }
+  .tag { padding:7px 15px; border-radius:6px; font-size:13px; font-weight:500; transition:transform .15s, background-color .3s ease, color .3s ease, border-color .3s ease; cursor:default; }
   .tag:hover { transform:translateY(-2px); }
   .tag-orange { background:rgba(255,107,53,0.12); color:#ff8c5a; border:1px solid rgba(255,107,53,0.2); }
   .tag-purple { background:rgba(124,58,237,0.12); color:#a78bfa; border:1px solid rgba(124,58,237,0.2); }
   .tag-green  { background:rgba(16,185,129,0.12); color:#34d399; border:1px solid rgba(16,185,129,0.2); }
   .tag-blue   { background:rgba(59,130,246,0.12); color:#60a5fa; border:1px solid rgba(59,130,246,0.2); }
   .tag-amber  { background:rgba(245,158,11,0.12); color:#fbbf24; border:1px solid rgba(245,158,11,0.2); }
+
+  /* ===== Modo claro: las pastillas de skills pasan a tonos pastel
+     mezclados con el crema del fondo (--bg-1), en vez de los colores
+     vivos pensados para el fondo oscuro. Así las cajas "conectan" con
+     el entorno en lugar de resaltar como bloques de color puro; el
+     texto se oscurece lo suficiente para mantener buen contraste. */
+  html[data-theme="light"] .tag-orange { background:#FAF2E5; color:#974D1E; border-color:rgba(151,77,30,0.25); }
+  html[data-theme="light"] .tag-purple { background:#F4EFEE; color:#5D438D; border-color:rgba(93,67,141,0.25); }
+  html[data-theme="light"] .tag-green  { background:#EEF6E9; color:#36754E; border-color:rgba(54,117,78,0.25); }
+  html[data-theme="light"] .tag-blue   { background:#F0F3EE; color:#365E88; border-color:rgba(54,94,136,0.25); }
+  html[data-theme="light"] .tag-amber  { background:#FAF4E3; color:#88641A; border-color:rgba(136,100,26,0.25); }
+
+  /* Halo de fondo del skills-stage: en modo claro se atenúa bastante más
+     (tanto el halo fijo superior como el que sigue al cursor al hacer
+     hover), para que no se vea como un bloque de color saturado sobre
+     el crema del fondo. */
+  html[data-theme="light"] .skills-stage::before { opacity:.3; }
+  html[data-theme="light"] .skills-stage:hover::after { opacity:.4; }
 
   .exp-list { display:flex; flex-direction:column; gap:12px; }
   .exp-card { border:1px solid var(--border); border-radius:12px; padding:24px 28px; display:flex; gap:20px; align-items:flex-start; transition:border-color .2s, box-shadow .2s; }
