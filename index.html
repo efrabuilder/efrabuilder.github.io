@@ -748,16 +748,16 @@
       </div>
     </a>
 
-    <a href="https://efrabuilder.github.io/Pdfsum/" target="_blank" class="proj-link">
+    <a href="https://rumboapp-pi.vercel.app/" target="_blank" class="proj-link">
       <div class="proj-card green">
         <span class="proj-open-hint" aria-hidden="true">↗</span>
-        <div class="proj-emoji">📄</div>
-        <div class="proj-name" data-en="PDF Summarizer" data-es="Resumidor de PDF">PDF Summarizer</div>
-        <div class="proj-desc" data-en="Extractive summarizer that scores sentences by word frequency to pull out a PDF's most relevant lines, entirely in the browser with pdf.js — the file never leaves the device. Also available as a Python package with a CLI." data-es="Resumidor extractivo que puntúa oraciones por frecuencia de palabras para extraer las más relevantes de un PDF, todo en el navegador con pdf.js — el archivo nunca sale del dispositivo. También disponible como paquete Python con CLI.">Extractive summarizer that scores sentences by word frequency to pull out a PDF's most relevant lines, entirely in the browser with pdf.js — the file never leaves the device. Also available as a Python package with a CLI.</div>
+        <div class="proj-emoji">🌦️</div>
+        <div class="proj-name" data-en="Rumbo — Weather & Currency" data-es="Rumbo — Clima y Moneda">Rumbo — Weather & Currency</div>
+        <div class="proj-desc" data-en="Travel companion web app showing real-time weather for any destination and converting your money to the local currency, with a map view and saved trips." data-es="App web de viaje que muestra el clima en tiempo real de cualquier destino y convierte tu dinero a la moneda local, con vista de mapa y viajes guardados.">Travel companion web app showing real-time weather for any destination and converting your money to the local currency, with a map view and saved trips.</div>
         <div class="proj-stack">
-          <span class="proj-tag" style="background:rgba(16,185,129,0.15);color:#34d399;">Python</span>
-          <span class="proj-tag" style="background:rgba(16,185,129,0.15);color:#34d399;">pdf.js</span>
-          <span class="proj-tag" style="background:rgba(16,185,129,0.15);color:#34d399;" data-en="NLP" data-es="PLN">NLP</span>
+          <span class="proj-tag" style="background:rgba(16,185,129,0.15);color:#34d399;" data-en="Weather API" data-es="API de Clima">Weather API</span>
+          <span class="proj-tag" style="background:rgba(16,185,129,0.15);color:#34d399;" data-en="Currency Exchange" data-es="Cambio de Moneda">Currency Exchange</span>
+          <span class="proj-tag" style="background:rgba(16,185,129,0.15);color:#34d399;">JavaScript</span>
         </div>
       </div>
     </a>
@@ -856,6 +856,20 @@
           <span class="proj-tag" style="background:rgba(255,107,53,0.15);color:#ff8c5a;">Python</span>
           <span class="proj-tag" style="background:rgba(255,107,53,0.15);color:#ff8c5a;">PDF Processing</span>
           <span class="proj-tag" style="background:rgba(255,107,53,0.15);color:#ff8c5a;">Automation</span>
+        </div>
+      </div>
+    </a>
+
+    <a href="https://recetario-app-alpha.vercel.app/" target="_blank" class="proj-link">
+      <div class="proj-card amber">
+        <span class="proj-open-hint" aria-hidden="true">↗</span>
+        <div class="proj-emoji">🍲</div>
+        <div class="proj-name" data-en="Recetario — Recipe Finder" data-es="Recetario — Buscador de Recetas">Recetario — Recipe Finder</div>
+        <div class="proj-desc" data-en="Web app to search recipes by name, category or region, follow the step-by-step instructions and save your favorites, powered by TheMealDB." data-es="App web para buscar recetas por nombre, categoría o región, seguir el paso a paso y guardar tus favoritas, con datos de TheMealDB.">Web app to search recipes by name, category or region, follow the step-by-step instructions and save your favorites, powered by TheMealDB.</div>
+        <div class="proj-stack">
+          <span class="proj-tag" style="background:rgba(245,158,11,0.15);color:#fbbf24;">JavaScript</span>
+          <span class="proj-tag" style="background:rgba(245,158,11,0.15);color:#fbbf24;">TheMealDB API</span>
+          <span class="proj-tag" style="background:rgba(245,158,11,0.15);color:#fbbf24;" data-en="Web App" data-es="App Web">Web App</span>
         </div>
       </div>
     </a>
@@ -1434,11 +1448,6 @@
       var yTop = yMid - 110;
       var yBot = yMid + 110;
       var cls = 'fx-line fx-' + ((i % 4) + 1);
-      // Un solo path continuo para las 3 copias horizontales (en vez de 3
-      // <path> separados): mismas curvas, mismo grosor, mismo alto — solo
-      // se elimina la unión entre copias, que antes se veía como un punto
-      // más grueso por los dos remates redondeados encimados. También baja
-      // a un tercio los nodos SVG por fila, mejorando el rendimiento.
       var d = 'M 0,' + yMid;
       for (var copy = 0; copy < 3; copy++) {
         var ox = copy * 1920;
@@ -1472,10 +1481,6 @@
     }
   })();
 
-  // ===== Líneas de fondo (bg-fx): en escritorio permanecen invisibles
-  // hasta que el usuario empieza a bajar por la página, luego se revelan
-  // con fade. En móvil quedan completamente ocultas (display:none forzado
-  // por CSS), así que este observer solo aplica en escritorio. =====
   (function(){
     var bgFx = document.getElementById('bg-fx');
     if (!bgFx) return;
@@ -1494,12 +1499,6 @@
     fxObserver.observe(bgFx);
   })();
 
-  // ===== Fluidez de las líneas de fondo en desktop: en vez de atenuar
-  // la opacidad de golpe durante el scroll (lo que se sentía como un
-  // "parpadeo" o salto), ahora se interpola suavemente con requestAnimationFrame
-  // hacia el valor objetivo (0.55 mientras hay scroll activo, 1 en reposo),
-  // dando una transición continua y fluida en vez de un cambio abrupto.
-  // Solo aplica en escritorio; en móvil las líneas quedan ocultas. =====
   (function(){
     var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (reduceMotion) return;
@@ -1554,7 +1553,6 @@
     updateBar();
   })();
 
-  // ===== Halo de profundidad: sigue el cursor dentro de cada tarjeta =====
   function bindGlow() {
     var glowEls = document.querySelectorAll('.exp-card, .edu-card, .cert-card, .lang-card, .contact-pill, .skills-stage');
     glowEls.forEach(function(el){
@@ -1571,7 +1569,6 @@
   }
   bindGlow();
 
-  // ===== Parallax sutil del fondo del hero según el cursor =====
   (function(){
     var hero = document.querySelector('.hero');
     var heroBg = document.querySelector('.hero-bg');
@@ -1589,13 +1586,6 @@
     });
   })();
 
-  // ===== Grafo animado del hero: nace del halo de luz que recorre el
-  // nombre ("Efraín Sebastian Rojas Artavia"). Los primeros nodos brotan
-  // desde ese punto de origen (parte alta-derecha del viewBox, sobre la
-  // franja donde pasa el brillo del texto) y desde ahí germina el resto
-  // de la red en 3 zonas concéntricas (núcleo, media, periferia). El
-  // origen se centró más hacia abajo, dentro del área central-derecha
-  // del hero, en vez de pegado a la esquina superior. =====
   function initHeroGraph(staticMode) {
     var svgEl = document.getElementById('heroGraphSvg');
     var linesG = document.getElementById('hgLines');
@@ -1603,13 +1593,8 @@
     if (!svgEl || !linesG || !nodesG) { return; }
 
     var W = 420, H = 340;
-    // Centro de origen del grafo: coincide con el punto exacto donde
-    // termina la franja de luz (hero-beam) que dispara el nombre y
-    // "builds software." al cargar la página. Todo el árbol nace y
-    // respira desde aquí, y el grafo solo empieza a dibujarse cuando
-    // esa franja de luz ha terminado su recorrido.
     var cx = 130, cy = 130;
-    var graphStartDelay = 2400; // ms — coincide con el fin de heroBeam (2.4s)
+    var graphStartDelay = 2400;
     var nodes = [];
 
     function spawnAt(tier, now) {
@@ -1713,7 +1698,6 @@
     }
 
     if (staticMode) {
-      // Movimiento reducido: se pinta una sola composición estable y visible, sin bucle de animación.
       nodes.forEach(function (n) { n.op = n.tier === 2 ? 0.9 : (n.tier === 1 ? 0.7 : 0.5); n.x = n.baseX; n.y = n.baseY; });
       paint();
       return;
